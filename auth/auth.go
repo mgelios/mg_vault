@@ -1,10 +1,11 @@
 package auth
 
 import (
-	"fmt"
-	"log"
+	"encoding/json"
+	"log/slog"
 	"mg_vault/model"
 	"mg_vault/storage"
+	"net/http"
 	"time"
 
 	"github.com/go-chi/jwtauth/v5"
@@ -16,34 +17,31 @@ var TokenAuth *jwtauth.JWTAuth
 
 func init() {
 	TokenAuth = jwtauth.New("HS256", []byte("secret"), nil, jwt.WithAcceptableSkew(6000*time.Second))
-
+	// hashedPassword, err := bcrypt.GenerateFromPassword([]byte(""), bcrypt.DefaultCost)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// fmt.Println(string(hashedPassword))
 	_, tokenString, _ := TokenAuth.Encode(map[string]interface{}{"user_id": 123})
-
-	fmt.Printf("DEBUG: a sample jwt is %s\n\n", tokenString)
+	slog.Debug("DEBUG: a sample jwt is %s\n\n", tokenString)
 }
 
-func GetTokenForUser(user model.User) string {
-	_, tokenString, _ := TokenAuth.Encode(map[string]interface{}{"id": user.Id})
-
-	return tokenString
-}
-
-func ProcessLoginRequest(loginRequestBody model.LoginRequest) string {
+func ProcessLoginRequest(w http.ResponseWriter, r *http.Request) {
+	var loginRequestBody model.LoginRequest
+	err := json.NewDecoder(r.Body).Decode(&loginRequestBody)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+	}
 	user, err := storage.GetUserByUsername(loginRequestBody.Username)
 	if err != nil {
-		fmt.Println(err.Error())
-		log.Fatal("Error during processing retriving user by login")
+		slog.Error(err.Error())
+		slog.Error("Error during processing retriving user by login")
 	}
-
-	fmt.Println(user)
-
 	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(loginRequestBody.Password))
-
 	if err != nil {
-		fmt.Println(err.Error())
-		log.Fatal("Error during processing comparison of the password")
-		return ""
+		slog.Error(err.Error())
+		slog.Error("Error during processing comparison of the password")
 	}
-
-	return GetTokenForUser(user)
+	_, token, _ := TokenAuth.Encode(map[string]interface{}{"id": user.Id})
+	w.Write([]byte("Bearer " + token))
 }

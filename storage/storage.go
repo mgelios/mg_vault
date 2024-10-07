@@ -3,7 +3,6 @@ package storage
 import (
 	"context"
 	"fmt"
-	"log"
 	"log/slog"
 	"mg_vault/model"
 	"time"
@@ -15,25 +14,18 @@ import (
 
 func initMongoClient() *mongo.Client {
 	clientOption := options.Client().ApplyURI("mongodb://localhost:19000")
-
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
-
 	defer cancel()
-
 	client, err := mongo.Connect(ctx, clientOption)
-
 	if err != nil {
-		log.Fatal(err)
+		slog.Error(err.Error())
 	}
-
 	client.Database("mg_vault").CreateCollection(ctx, "user")
 	client.Database("mg_vault").CreateCollection(ctx, "notes")
 	client.Database("mg_vault").CreateCollection(ctx, "quick_notes")
-
 	if err != nil {
 		slog.Error("Error while creating user collection")
 	}
-
 	return client
 }
 
@@ -48,7 +40,6 @@ func GetUserById(id string) (model.User, error) {
 }
 
 func GetUserByUsername(username string) (model.User, error) {
-
 	fmt.Println(username)
 	collection := mongo_client.Database("mg_vault").Collection("user")
 	result := model.User{}
