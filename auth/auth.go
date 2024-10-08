@@ -30,17 +30,24 @@ func ProcessLoginRequest(w http.ResponseWriter, r *http.Request) {
 	var loginRequestBody model.LoginRequest
 	err := json.NewDecoder(r.Body).Decode(&loginRequestBody)
 	if err != nil {
+		slog.Error(loginRequestBody.Username)
+		slog.Error(err.Error())
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
 	}
 	user, err := storage.GetUserByUsername(loginRequestBody.Username)
 	if err != nil {
 		slog.Error(err.Error())
 		slog.Error("Error during processing retriving user by login")
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
 	}
 	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(loginRequestBody.Password))
 	if err != nil {
 		slog.Error(err.Error())
 		slog.Error("Error during processing comparison of the password")
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
 	}
 	_, token, _ := TokenAuth.Encode(map[string]interface{}{"id": user.Id})
 	w.Write([]byte("Bearer " + token))

@@ -1,7 +1,9 @@
 package router
 
 import (
+	"embed"
 	"fmt"
+	"html/template"
 	"log/slog"
 	"mg_vault/auth"
 	"net/http"
@@ -10,7 +12,10 @@ import (
 	"github.com/go-chi/jwtauth/v5"
 )
 
-func RunServer() {
+var templates *template.Template
+
+func RunServer(templateFolder embed.FS) {
+	templates = template.Must(template.ParseFS(templateFolder, "templates/*"))
 	router := chi.NewRouter()
 	definePublicEndpoints(router)
 	defineSecuredEndpoints(router)
@@ -23,12 +28,27 @@ func RunServer() {
 }
 
 func definePublicEndpoints(router *chi.Mux) {
+	fs := http.FileServer(http.Dir("static"))
+	router.Handle("/static/*", http.StripPrefix("/static/", fs))
+
 	router.Route("/api/v1/user", func(router chi.Router) {
 		router.Post("/login", auth.ProcessLoginRequest)
 	})
 
 	router.Route("/index", func(router chi.Router) {
+		router.Get("/", func(w http.ResponseWriter, r *http.Request) {
+			if err := templates.ExecuteTemplate(w, "index.html", ""); err != nil {
+				slog.Error(err.Error())
+			}
+		})
+	})
 
+	router.Route("/user", func(router chi.Router) {
+		router.Get("/login", func(w http.ResponseWriter, r *http.Request) {
+			if err := templates.ExecuteTemplate(w, "login.html", ""); err != nil {
+				slog.Error(err.Error())
+			}
+		})
 	})
 }
 
