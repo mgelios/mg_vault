@@ -2,7 +2,6 @@ package storage
 
 import (
 	"context"
-	"fmt"
 	"log/slog"
 	"mg_vault/model"
 	"time"
@@ -40,7 +39,7 @@ func GetUserById(id string) (model.User, error) {
 }
 
 func GetUserByUsername(username string) (model.User, error) {
-	fmt.Println(username)
+	slog.Debug(username)
 	collection := mongo_client.Database("mg_vault").Collection("user")
 	result := model.User{}
 	filter := bson.D{{"username", username}}

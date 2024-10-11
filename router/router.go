@@ -7,8 +7,10 @@ import (
 	"log/slog"
 	"mg_vault/auth"
 	"net/http"
+	"time"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/httprate"
 	"github.com/go-chi/jwtauth/v5"
 )
 
@@ -17,6 +19,7 @@ var templates *template.Template
 func RunServer(templateFolder embed.FS) {
 	templates = template.Must(template.ParseFS(templateFolder, "templates/*"))
 	router := chi.NewRouter()
+	router.Use(httprate.LimitAll(100, time.Second))
 	definePublicEndpoints(router)
 	defineSecuredEndpoints(router)
 	slog.Debug("Applies handler to the router")
@@ -29,6 +32,7 @@ func RunServer(templateFolder embed.FS) {
 
 func definePublicEndpoints(router *chi.Mux) {
 	fs := http.FileServer(http.Dir("static"))
+
 	router.Handle("/static/*", http.StripPrefix("/static/", fs))
 
 	router.Route("/api/v1/user", func(router chi.Router) {

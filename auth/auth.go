@@ -38,7 +38,7 @@ func ProcessLoginRequest(w http.ResponseWriter, r *http.Request) {
 	user, err := storage.GetUserByUsername(loginRequestBody.Username)
 	if err != nil {
 		slog.Error(err.Error())
-		slog.Error("Error during processing retriving user by login")
+		slog.Error("Error during processing retriving user by username")
 		http.Error(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
@@ -50,5 +50,13 @@ func ProcessLoginRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	_, token, _ := TokenAuth.Encode(map[string]interface{}{"id": user.Id})
-	w.Write([]byte("Bearer " + token))
+
+	cookie := http.Cookie{
+		Name:  "jwt",
+		Path:  "/",
+		Value: token,
+	}
+
+	http.SetCookie(w, &cookie)
+	w.Header().Add("HX-Redirect", "/index")
 }
