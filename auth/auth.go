@@ -22,8 +22,8 @@ func init() {
 	// 	panic(err)
 	// }
 	// fmt.Println(string(hashedPassword))
-	_, tokenString, _ := TokenAuth.Encode(map[string]interface{}{"user_id": 123})
-	slog.Debug("DEBUG: a sample jwt is %s\n\n", tokenString)
+	// _, tokenString, _ := TokenAuth.Encode(map[string]interface{}{"user_id": 123})
+	// slog.Debug("DEBUG: a sample jwt is %s\n\n", tokenString)
 }
 
 func ProcessLoginRequest(w http.ResponseWriter, r *http.Request) {

@@ -7,6 +7,7 @@ import (
 	"log/slog"
 	"mg_vault/auth"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -24,9 +25,19 @@ func RunServer(templateFolder embed.FS) {
 	defineSecuredEndpoints(router)
 	slog.Debug("Applies handler to the router")
 
-	err := http.ListenAndServe(":8000", router)
-	if err != nil {
-		slog.Error(err.Error())
+	protocol := os.Getenv("MG_ENV")
+	if protocol == "" || protocol == "dev" {
+		err := http.ListenAndServe(":8000", router)
+		if err != nil {
+			slog.Error(err.Error())
+		}
+	} else if protocol == "prod" {
+		certfilePath := os.Getenv("MG_VAULT_CERT_PATH")
+		keyfilePath := os.Getenv("MG_VAULT_KEY_PATH")
+		err := http.ListenAndServeTLS(":443", certfilePath, keyfilePath, router)
+		if err != nil {
+			slog.Error(err.Error())
+		}
 	}
 }
 

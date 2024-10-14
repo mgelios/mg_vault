@@ -4,6 +4,7 @@ import (
 	"context"
 	"log/slog"
 	"mg_vault/model"
+	"os"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -13,6 +14,14 @@ import (
 
 func initMongoClient() *mongo.Client {
 	clientOption := options.Client().ApplyURI("mongodb://localhost:19000")
+	if os.Getenv("MG_ENV") == "prod" {
+		clientOption := options.Client().ApplyURI("mongodb://mongodb:27017")
+		credential := options.Credential{
+			Username: os.Getenv("MG_MONGO_USERNAME"),
+			Password: os.Getenv("MG_MONGO_PASSWORD"),
+		}
+		clientOption = clientOption.SetAuth(credential)
+	}
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()
 	client, err := mongo.Connect(ctx, clientOption)
@@ -23,7 +32,7 @@ func initMongoClient() *mongo.Client {
 	client.Database("mg_vault").CreateCollection(ctx, "notes")
 	client.Database("mg_vault").CreateCollection(ctx, "quick_notes")
 	if err != nil {
-		slog.Error("Error while creating user collection")
+		slog.Error("Error while creating init collections")
 	}
 	return client
 }
