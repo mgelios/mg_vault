@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mg_vault_mongo
+    restart: always
+    ports:
+      - "19000:27017"
+    volumes:
+      - /app/mongo_data:/data/db
+    networks:
+      - mg_net
+  dragonfly:
+    image: 'docker.dragonflydb.io/dragonflydb/dragonfly'
+    container_name: mg_vault_dragonfly
+    ulimits:
+      memlock: -1
+    ports:
+      - "17000:6379"
+    volumes:
+      - /app/dragonfly_data:/data
+    networks:
+      - mg_net
+  backend:
+    image: mgelios/mg_vault_backend:latest
+    restart: always
+    container_name: "mg_vault_backend"
+    ports:
+      - "443:443"
+      - "80:80"
+    networks:
+      - mg_net
+networks:
+  mg_net:
+    driver: bridge
+volumes:
+  dragonflydata:
+    driver: local
+  mongodb_data:
+    driver: local

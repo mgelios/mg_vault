@@ -9,10 +9,10 @@ import (
 //go:embed templates
 var templatesFolder embed.FS
 
-//go:embed static
+//go:embed all:static
 var staticContentFolder embed.FS
 
 func main() {
 	slog.Info("starting web server")
-	router.RunServer(templatesFolder)
+	router.RunServer(templatesFolder, staticContentFolder)
 }

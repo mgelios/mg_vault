@@ -4,6 +4,7 @@ import (
 	"embed"
 	"fmt"
 	"html/template"
+	"io/fs"
 	"log/slog"
 	"mg_vault/auth"
 	"net/http"
@@ -16,9 +17,13 @@ import (
 )
 
 var templates *template.Template
+var fileServer http.Handler
 
-func RunServer(templateFolder embed.FS) {
+func RunServer(templateFolder embed.FS, staticContentFolder embed.FS) {
 	templates = template.Must(template.ParseFS(templateFolder, "templates/*"))
+	var staticContent, _ = fs.Sub(staticContentFolder, "static")
+	fileServer = http.FileServer(http.FS(staticContent))
+
 	router := chi.NewRouter()
 	router.Use(httprate.LimitAll(100, time.Second))
 	definePublicEndpoints(router)
@@ -44,9 +49,8 @@ func RunServer(templateFolder embed.FS) {
 }
 
 func definePublicEndpoints(router *chi.Mux) {
-	fs := http.FileServer(http.Dir("./static"))
 	slog.Info("Init of fileserver finished")
-	router.Handle("/static/*", http.StripPrefix("/static/", fs))
+	router.Handle("/static/*", http.StripPrefix("/static/", fileServer))
 
 	router.Route("/api/v1/user", func(router chi.Router) {
 		router.Post("/login", auth.ProcessLoginRequest)
