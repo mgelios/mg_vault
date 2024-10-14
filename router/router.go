@@ -28,7 +28,7 @@ func RunServer(templateFolder embed.FS) {
 	env := os.Getenv("MG_ENV")
 	if env == "" || env == "dev" {
 		slog.Info("Setting up dev env")
-		err := http.ListenAndServe(":8000", router)
+		err := http.ListenAndServe(":80", router)
 		if err != nil {
 			slog.Error(err.Error())
 		}
@@ -44,7 +44,7 @@ func RunServer(templateFolder embed.FS) {
 }
 
 func definePublicEndpoints(router *chi.Mux) {
-	fs := http.FileServer(http.Dir("static"))
+	fs := http.FileServer(http.Dir("./static"))
 	slog.Info("Init of fileserver finished")
 	router.Handle("/static/*", http.StripPrefix("/static/", fs))
 

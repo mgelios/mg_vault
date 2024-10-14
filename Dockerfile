@@ -4,7 +4,7 @@ WORKDIR /build
 COPY . .
 
 RUN go mod download
-RUN go build -o ./mg_vault
+RUN go build
 
 FROM alpine:latest
 
