@@ -2,6 +2,7 @@ package main
 
 import (
 	"embed"
+	"log/slog"
 	"mg_vault/router"
 )
 
@@ -12,5 +13,6 @@ var templatesFolder embed.FS
 var staticContentFolder embed.FS
 
 func main() {
+	slog.Info("starting web server")
 	router.RunServer(templatesFolder)
 }

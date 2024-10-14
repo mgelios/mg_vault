@@ -36,6 +36,12 @@ services:
     volumes:
       - ${MG_VAULT_CERT_PATH}:${MG_VAULT_CERT_PATH}
       - ${MG_VAULT_KEY_PATH}:${MG_VAULT_KEY_PATH}
+    environment:
+      MG_ENV: ${MG_ENV}
+      MG_MONGO_USERNAME: ${MG_MONGO_USERNAME}
+      MG_MONGO_PASSWORD: ${MG_MONGO_PASSWORD}
+      MG_VAULT_CERT_PATH: ${MG_VAULT_CERT_PATH}
+      MG_VAULT_KEY_PATH: ${MG_VAULT_KEY_PATH}
 networks:
   mg_net:
     driver: bridge
