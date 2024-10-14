@@ -25,13 +25,15 @@ func RunServer(templateFolder embed.FS) {
 	defineSecuredEndpoints(router)
 	slog.Debug("Applies handler to the router")
 
-	protocol := os.Getenv("MG_ENV")
-	if protocol == "" || protocol == "dev" {
+	env := os.Getenv("MG_ENV")
+	if env == "" || env == "dev" {
+		slog.Info("Setting up dev env")
 		err := http.ListenAndServe(":8000", router)
 		if err != nil {
 			slog.Error(err.Error())
 		}
-	} else if protocol == "prod" {
+	} else if env == "prod" {
+		slog.Info("Setting up prod env")
 		certfilePath := os.Getenv("MG_VAULT_CERT_PATH")
 		keyfilePath := os.Getenv("MG_VAULT_KEY_PATH")
 		err := http.ListenAndServeTLS(":443", certfilePath, keyfilePath, router)
@@ -43,7 +45,7 @@ func RunServer(templateFolder embed.FS) {
 
 func definePublicEndpoints(router *chi.Mux) {
 	fs := http.FileServer(http.Dir("static"))
-
+	slog.Info("Init of fileserver finished")
 	router.Handle("/static/*", http.StripPrefix("/static/", fs))
 
 	router.Route("/api/v1/user", func(router chi.Router) {
