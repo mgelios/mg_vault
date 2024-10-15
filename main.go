@@ -14,5 +14,6 @@ var staticContentFolder embed.FS
 
 func main() {
 	slog.Info("starting web server")
-	router.RunServer(templatesFolder, staticContentFolder)
+	router.InitServer(templatesFolder, staticContentFolder)
+	router.RunServer()
 }

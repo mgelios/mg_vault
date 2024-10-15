@@ -18,18 +18,24 @@ import (
 
 var templates *template.Template
 var fileServer http.Handler
+var router *chi.Mux
 
-func RunServer(templateFolder embed.FS, staticContentFolder embed.FS) {
+func InitServer(templateFolder embed.FS, staticContentFolder embed.FS) *chi.Mux {
 	templates = template.Must(template.ParseFS(templateFolder, "templates/*"))
 	var staticContent, _ = fs.Sub(staticContentFolder, "static")
 	fileServer = http.FileServer(http.FS(staticContent))
-
-	router := chi.NewRouter()
+	router = chi.NewRouter()
 	router.Use(httprate.LimitAll(100, time.Second))
 	definePublicEndpoints(router)
 	defineSecuredEndpoints(router)
-	slog.Debug("Applies handler to the router")
+	return router
+}
 
+func redirectToHttps(w http.ResponseWriter, r *http.Request) {
+	http.Redirect(w, r, "https://"+r.Host+r.URL.String(), http.StatusMovedPermanently)
+}
+
+func RunServer() {
 	env := os.Getenv("MG_ENV")
 	if env == "" || env == "dev" {
 		slog.Info("Setting up dev env")
@@ -41,6 +47,7 @@ func RunServer(templateFolder embed.FS, staticContentFolder embed.FS) {
 		slog.Info("Setting up prod env")
 		certfilePath := os.Getenv("MG_VAULT_CERT_PATH")
 		keyfilePath := os.Getenv("MG_VAULT_KEY_PATH")
+		go http.ListenAndServe(":80", http.HandlerFunc(redirectToHttps))
 		err := http.ListenAndServeTLS(":443", certfilePath, keyfilePath, router)
 		if err != nil {
 			slog.Error(err.Error())
@@ -49,12 +56,8 @@ func RunServer(templateFolder embed.FS, staticContentFolder embed.FS) {
 }
 
 func definePublicEndpoints(router *chi.Mux) {
-	slog.Info("Init of fileserver finished")
+	slog.Info("Starting init of public endpoints")
 	router.Handle("/static/*", http.StripPrefix("/static/", fileServer))
-
-	router.Route("/api/v1/user", func(router chi.Router) {
-		router.Post("/login", auth.ProcessLoginRequest)
-	})
 
 	router.Route("/index", func(router chi.Router) {
 		router.Get("/", func(w http.ResponseWriter, r *http.Request) {
@@ -64,16 +67,11 @@ func definePublicEndpoints(router *chi.Mux) {
 		})
 	})
 
-	router.Route("/user", func(router chi.Router) {
-		router.Get("/login", func(w http.ResponseWriter, r *http.Request) {
-			if err := templates.ExecuteTemplate(w, "login.html", ""); err != nil {
-				slog.Error(err.Error())
-			}
-		})
-	})
+	DefineUserRoutes(router)
 }
 
 func defineSecuredEndpoints(router *chi.Mux) {
+	slog.Info("Starting init of secured endpoints")
 	router.Group(func(r chi.Router) {
 		r.Use(jwtauth.Verifier(auth.TokenAuth))
 		r.Use(jwtauth.Authenticator(auth.TokenAuth))
