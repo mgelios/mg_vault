@@ -21,7 +21,7 @@ var fileServer http.Handler
 var router *chi.Mux
 
 func InitServer(templateFolder embed.FS, staticContentFolder embed.FS) *chi.Mux {
-	templates = template.Must(template.ParseFS(templateFolder, "templates/*"))
+	templates = template.Must(template.ParseFS(templateFolder, "templates/*.html", "templates/*/*.html"))
 	var staticContent, _ = fs.Sub(staticContentFolder, "static")
 	fileServer = http.FileServer(http.FS(staticContent))
 	router = chi.NewRouter()
