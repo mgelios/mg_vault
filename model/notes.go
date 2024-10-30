@@ -12,4 +12,5 @@ type Note struct {
 	Content string   `json:"content" bson:"content"`
 	Path    []string `json:"path" bson:"path"`
 	Tags    []string `json:"tags" bson:"tags"`
+	Author  string   `json:"author" bson:"author"`
 }

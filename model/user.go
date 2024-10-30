@@ -15,5 +15,9 @@ type LoginRequest struct {
 }
 
 type LoginResponse struct {
-	Username string ``
+	Id         string `json:"id,omitempty" bson:"_id,omitempty"`
+	Username   string `json:"username bson:"username"`
+	Email      string `json:"email bson:"email"`
+	FirstName  string `json:"first_name" bson:"first_name"`
+	SecondName string `json:"second_name" bson:"second_name"`
 }

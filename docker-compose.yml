@@ -11,7 +11,7 @@ services:
     ports:
       - "19000:27017"
     volumes:
-      - mongodb_data:/data/db
+      - ../.infra/mg_vault/mongo:/data/db
   dragonfly:
     image: 'docker.dragonflydb.io/dragonflydb/dragonfly'
     ulimits:

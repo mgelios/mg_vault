@@ -16,7 +16,7 @@ import (
 var TokenAuth *jwtauth.JWTAuth
 
 func init() {
-	TokenAuth = jwtauth.New("HS256", []byte("secret"), nil, jwt.WithAcceptableSkew(6000*time.Second))
+	TokenAuth = jwtauth.New("HS256", []byte("secret"), nil, jwt.WithAcceptableSkew(24*4*time.Hour))
 	// hashedPassword, err := bcrypt.GenerateFromPassword([]byte(""), bcrypt.DefaultCost)
 	// if err != nil {
 	// 	panic(err)

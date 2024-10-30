@@ -13,14 +13,19 @@ import (
 )
 
 func initMongoClient() *mongo.Client {
-	clientOption := options.Client().ApplyURI("mongodb://localhost:19000")
+	slog.Info("Init of Mongo Client")
+	var clientOption *options.ClientOptions
 	if os.Getenv("MG_ENV") == "prod" {
-		clientOption := options.Client().ApplyURI("mongodb://mongodb:27017")
+		slog.Info("Setting mongo for prod env")
+		clientOption = options.Client().ApplyURI("mongodb://mongodb:27017")
 		credential := options.Credential{
 			Username: os.Getenv("MG_MONGO_USERNAME"),
 			Password: os.Getenv("MG_MONGO_PASSWORD"),
 		}
 		clientOption = clientOption.SetAuth(credential)
+	} else {
+		slog.Info("Setting mongo for dev env")
+		clientOption = options.Client().ApplyURI("mongodb://localhost:19000")
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()
@@ -34,6 +39,7 @@ func initMongoClient() *mongo.Client {
 	if err != nil {
 		slog.Error("Error while creating init collections")
 	}
+	slog.Info("Mongo init finished")
 	return client
 }
 
