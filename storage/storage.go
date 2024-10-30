@@ -13,14 +13,16 @@ import (
 )
 
 func initMongoClient() *mongo.Client {
-	clientOption := options.Client().ApplyURI("mongodb://localhost:19000")
+	var clientOption *options.ClientOptions
 	if os.Getenv("MG_ENV") == "prod" {
-		clientOption := options.Client().ApplyURI("mongodb://mongodb:27017")
+		clientOption = options.Client().ApplyURI("mongodb://mongodb:27017")
 		credential := options.Credential{
 			Username: os.Getenv("MG_MONGO_USERNAME"),
 			Password: os.Getenv("MG_MONGO_PASSWORD"),
 		}
 		clientOption = clientOption.SetAuth(credential)
+	} else {
+		clientOption = options.Client().ApplyURI("mongodb://localhost:19000")
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()

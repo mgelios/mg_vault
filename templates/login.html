@@ -1,17 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Login</title>
-    <script src="/static/htmx.min.js"></script>
-    <script src="/static/json-enc-custom.min.js"></script>
-</head>
-<body>
-    <h1>Login page</h1>
-    <form hx-post="/api/v1/user/login" hx-ext="json-enc-custom">
-        <input type="text" placeholder="Username" name="username" required>
-        <input type="password" placeholder="Password" name="password" required>
-        <button type="submit">Login</button>
-    </form>
-</body>
-</html>
+{{template "header"}}
+{{template "body_start"}}
+
+<h1>Login page</h1>
+<form hx-post="/api/v1/user/login" hx-ext="json-enc-custom">
+    <input type="text" placeholder="Username" name="username" required>
+    <input type="password" placeholder="Password" name="password" required>
+    <button type="submit">Login</button>
+</form>
+
+{{template "body_end"}}
