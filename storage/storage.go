@@ -61,3 +61,24 @@ func GetUserByUsername(username string) (model.User, error) {
 	err := collection.FindOne(context.Background(), filter).Decode(&result)
 	return result, err
 }
+
+func GetAllQuickNotesForUser(userId string) ([]model.QuickNote, error) {
+	slog.Debug("Getting quick notes")
+	collection := mongo_client.Database("mg_vault").Collection("quick_notes")
+	filter := bson.D{{"author", userId}}
+	cursor, err := collection.Find(context.Background(), filter)
+	if err != nil {
+		slog.Error("Error during quick notes extraction")
+		return nil, err
+	}
+	var results []model.QuickNote
+	err = cursor.All(context.Background(), &results)
+	return results, err
+}
+
+func CreateQuickNote(qnote model.QuickNote) error {
+	slog.Debug(qnote.Name)
+	collection := mongo_client.Database("mg_vault").Collection("quick_notes")
+	_, err := collection.InsertOne(context.Background(), qnote)
+	return err
+}

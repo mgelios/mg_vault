@@ -2,11 +2,14 @@ package router
 
 import (
 	"embed"
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"io/fs"
 	"log/slog"
 	"mg_vault/auth"
+	"mg_vault/model"
+	"mg_vault/storage"
 	"net/http"
 	"os"
 	"time"
@@ -77,7 +80,34 @@ func defineSecuredEndpoints(router *chi.Mux) {
 		r.Use(jwtauth.Authenticator(auth.TokenAuth))
 		r.Get("/admin", func(w http.ResponseWriter, r *http.Request) {
 			_, claims, _ := jwtauth.FromContext(r.Context())
-			w.Write([]byte(fmt.Sprintf("Protected resource, hi %v", claims["id"])))
+			w.Write([]byte(fmt.Sprintf("Protected resource, hi %v", claims["username"])))
+		})
+		r.Get("/qnotes/create", func(w http.ResponseWriter, r *http.Request) {
+			if err := templates.ExecuteTemplate(w, "edit_quick_note.html", ""); err != nil {
+				slog.Error(err.Error())
+			}
+		})
+		r.Get("/qnotes", func(w http.ResponseWriter, r *http.Request) {
+			_, claims, _ := jwtauth.FromContext(r.Context())
+			response := model.UserQuckNotesResponse{}
+			response.Notes, _ = storage.GetAllQuickNotesForUser(fmt.Sprintf("%v", claims["id"]))
+			if err := templates.ExecuteTemplate(w, "quick_notes.html", response); err != nil {
+				slog.Error(err.Error())
+			}
+		})
+		r.Post("/api/v1/qnotes", func(w http.ResponseWriter, r *http.Request) {
+			_, claims, _ := jwtauth.FromContext(r.Context())
+			var quickNote model.QuickNote
+			err := json.NewDecoder(r.Body).Decode(&quickNote)
+			if err != nil {
+				slog.Error(err.Error())
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
+			quickNote.Author = fmt.Sprintf("%v", claims["id"])
+
+			storage.CreateQuickNote(quickNote)
+			w.Header().Add("HX-Redirect", "/qnotes")
 		})
 	})
 }

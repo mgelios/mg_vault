@@ -1,0 +1,10 @@
+{{template "header"}}
+{{template "body_start"}}
+
+<form hx-post="/api/v1/qnotes" hx-ext="json-enc-custom">
+    <input type="text" placeholder="Name" name="name" required>
+    <input type="text" placeholder="Content" name="content" required>
+    <button type="submit">Create</button>
+</form>
+
+{{template "body_end"}}

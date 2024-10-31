@@ -49,7 +49,11 @@ func ProcessLoginRequest(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
-	_, token, _ := TokenAuth.Encode(map[string]interface{}{"id": user.Id})
+	_, token, _ := TokenAuth.Encode(map[string]interface{}{
+		"id":       user.Id,
+		"username": user.Username,
+		"email":    user.Email,
+	})
 
 	cookie := http.Cookie{
 		Name:  "jwt",
