@@ -1,10 +1,15 @@
 /* constants section */
 :root {
     --dark-1: hsl(40 0% 10%);
+    --dark-1-5: hsl(40 0% 12.5%);
     --dark-2: hsl(40 0% 15%);
+    --dark-2-5: hsl(40 0% 17.5%);
     --dark-3: hsl(40 0% 20%);
+    --dark-3-5: hsl(40 0% 22.5%);
     --dark-4: hsl(40 0% 25%);
+    --dark-4-5: hsl(40 0% 27.5%);
     --dark-5: hsl(40 0% 30%);
+    --dark-5-5: hsl(40 0% 32.5%);
 
     --light-1: hsl(40 0% 60%);
     --light-2: hsl(40 0% 70%);
@@ -69,6 +74,12 @@
 .backgroud-dark-3 { background-color: var(--dark-3); }
 .backgroud-dark-4 { background-color: var(--dark-4); }
 .backgroud-dark-5 { background-color: var(--dark-5); }
+
+.backgroud-dark-1-5 { background-color: var(--dark-1-5); }
+.backgroud-dark-2-5 { background-color: var(--dark-2-5); }
+.backgroud-dark-3-5 { background-color: var(--dark-3-5); }
+.backgroud-dark-4-5 { background-color: var(--dark-4-5); }
+.backgroud-dark-5-5 { background-color: var(--dark-5-5); }
 
 .backgroud-light-1 { background-color: var(--light-1); }
 .backgroud-light-2 { background-color: var(--light-2); }
@@ -220,11 +231,11 @@ h1, h2, h3, h4, h5, h6, p {
 }
 
 .grid-item:hover {
-    background-color: var(--dark-4);
+    background-color: var(--dark-4-5);
 }
 
 .grid-item:active {
-    background-color: var(--dark-2);
+    background-color: var(--dark-2-5);
 }
 
 .badge {
@@ -260,6 +271,10 @@ h1, h2, h3, h4, h5, h6, p {
 .container-header a {
     text-decoration: none;
     color: var(--light-3);
+}
+
+.container-header a h1 {
+    display: inline-block;
 }
 
 .card-wrapper {
@@ -299,11 +314,15 @@ h1, h2, h3, h4, h5, h6, p {
 }
 
 .card a:hover {
-    background-color: var(--dark-4);
+    background-color: var(--dark-4-5);
 }
 
 .card a:active {
-    background-color: var(--dark-2);
+    background-color: var(--dark-2-5);
+}
+
+.q-note-content {
+    padding: .5em;
 }
 
 .cheatsheet-body .cheatsheet-item {
@@ -363,6 +382,37 @@ h1, h2, h3, h4, h5, h6, p {
     padding: .3em;
     background-color: var(--dark-5);
     border-radius: .5em;
+}
+
+.navbar {
+    background-color: var(--dark-1-5);
+    padding: .5em;
+    top: 0;
+    text-decoration: none;
+    color: var(--light-3);
+    margin-bottom: .5em;
+}
+
+.navbar nav {
+    display: flex;
+}
+
+.navbar nav ul {
+    display: flex;
+    flex-direction: row;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar nav ul li {
+    flex: 0 0 auto;
+    list-style: none;
+    padding: .5em;
+}
+
+.navbar nav ul li a {
+    text-decoration: none;
+    color: var(--light-3);
 }
 
 @media only screen and (max-width: 600px) {

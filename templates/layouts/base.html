@@ -2,6 +2,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta name="theme-color" content="#000000">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
     <title>Index of app</title>
     <link rel="icon" type="image/x-icon" href="/static/img/favicon.ico">
@@ -9,11 +11,24 @@
     <script src="/static/script/common.js"></script>
     <script src="/static/script/htmx.min.js"></script>
     <script src="/static/script/json-enc-custom.min.js"></script>
+    <script src="/static/script/masonry.pkgd.min.js"></script>
 </head>
 {{end}}
 
 {{define "body_start"}}
 <body>
+{{end}}
+
+{{define "navbar"}}
+<header class="navbar">
+    <nav>
+        <ul>
+            <li><a href="/index">Home</a></li>
+            <li><a href="/qnotes">Quick Notes</a></li>
+            <li><a href="/notes">Notes</a></li>
+        </ul>
+    </nav>
+</header>
 {{end}}
 
 {{define "body_end"}}

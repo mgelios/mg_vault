@@ -1,6 +1,33 @@
 {{template "header"}}
 {{template "body_start"}}
 
-{{.}}
+{{template "navbar"}}
+
+<div class="flex-container">
+    <section class="container-header">
+        <div>
+            <a href="/index">
+                <h1>Quick Notes</h1>
+            </a>
+            <a href="/qnotes/create">
+                <h1>+</h2>
+            </a>
+        </div>
+    </section>
+    <section class="cards-container">
+        <section id="cards-container" class="cards-container" data-masonry='{"percentPosition": true }'>
+            {{range $index, $qnote := .Notes}}
+                <div class="card-wrapper">
+                    <div class="card">
+                        <div class="card-header">{{$qnote.Name}}</div>
+                        <div class="card-body q-note-content">
+                            <artice>{{$qnote.Content}}</article>
+                        </div>
+                    </div>
+                </div>
+            {{end}}
+        </section>
+    </section>
+</div>
 
 {{template "body_end"}}

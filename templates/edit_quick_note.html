@@ -1,6 +1,8 @@
 {{template "header"}}
 {{template "body_start"}}
 
+{{template "navbar"}}
+
 <form hx-post="/api/v1/qnotes" hx-ext="json-enc-custom">
     <input type="text" placeholder="Name" name="name" required>
     <input type="text" placeholder="Content" name="content" required>
