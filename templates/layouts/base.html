@@ -23,9 +23,15 @@
 <header class="navbar">
     <nav>
         <ul>
-            <li><a href="/index">Home</a></li>
-            <li><a href="/qnotes">Quick Notes</a></li>
-            <li><a href="/notes">Notes</a></li>
+            {{if .User.LoggedIn}}
+                <li><a href="/user/profile">{{.User.Username}}</a></li>
+                <li><a href="/">Home</a></li>
+                <li><a href="/qnotes">Quick Notes</a></li>
+                <li><a href="/notes">Notes</a></li>
+                <li><a href="#" hx-post="/api/v1/user/logout" hx-ext="json-enc-custom">Log Out</a></li>
+            {{else}}
+                <li><a href="/user/login">Log In</a></li>
+            {{end}}
         </ul>
     </nav>
 </header>

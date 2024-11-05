@@ -9,6 +9,7 @@ type QuickNote struct {
 
 type UserQuckNotesResponse struct {
 	Notes []QuickNote `json:"qnotes"`
+	User  UserClaims  `json:"user"`
 }
 
 type Note struct {

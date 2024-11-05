@@ -2,6 +2,7 @@ package auth
 
 import (
 	"encoding/json"
+	"fmt"
 	"log/slog"
 	"mg_vault/model"
 	"mg_vault/storage"
@@ -24,6 +25,17 @@ func init() {
 	// fmt.Println(string(hashedPassword))
 	// _, tokenString, _ := TokenAuth.Encode(map[string]interface{}{"user_id": 123})
 	// slog.Debug("DEBUG: a sample jwt is %s\n\n", tokenString)
+}
+
+func GetUserClaimsFromContext(r *http.Request) model.UserClaims {
+	_, claims, _ := jwtauth.FromContext(r.Context())
+	user := model.UserClaims{
+		Id:       fmt.Sprintf("%v", claims["id"]),
+		Username: fmt.Sprintf("%v", claims["username"]),
+		Email:    fmt.Sprintf("%v", claims["email"]),
+		LoggedIn: len(claims) > 0,
+	}
+	return user
 }
 
 func ProcessLoginRequest(w http.ResponseWriter, r *http.Request) {
@@ -62,5 +74,16 @@ func ProcessLoginRequest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.SetCookie(w, &cookie)
-	w.Header().Add("HX-Redirect", "/index")
+	w.Header().Add("HX-Redirect", "/")
+}
+
+func ProcessLogoutRequest(w http.ResponseWriter, r *http.Request) {
+	cookie := http.Cookie{
+		Name:  "jwt",
+		Path:  "/",
+		Value: "",
+	}
+
+	http.SetCookie(w, &cookie)
+	w.Header().Add("HX-Redirect", "/")
 }
