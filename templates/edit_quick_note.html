@@ -3,10 +3,27 @@
 
 {{template "navbar" .}}
 
-<form hx-post="/api/v1/qnotes" hx-ext="json-enc-custom">
-    <input type="text" placeholder="Name" name="name" required>
-    <input type="text" placeholder="Content" name="content" required>
-    <button type="submit">Create</button>
-</form>
+<div class="flex-container">
+    <section class="container-header">
+        <div>
+            <a href="/">
+                <h1>Quick Note</h1>
+            </a>
+        </div>
+    </section>
+    <section class="cards-container">
+        <form hx-post="/api/v1/qnotes" hx-ext="json-enc-custom">
+            <div class="input-wrapper">
+                <h2>Name:</h2>
+                <input type="text" placeholder="Name" name="name" required>
+            </div>
+            <div class="input-wrapper">
+                <h2>Content:</h2>
+                <input type="text" placeholder="Content" name="content" required>
+            </div>
+            <button type="submit" class="button">Create</button>
+        </form>
+    </section>
+</div>
 
 {{template "body_end"}}

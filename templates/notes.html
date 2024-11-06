@@ -1,0 +1,31 @@
+{{template "header"}}
+{{template "body_start"}}
+
+{{template "navbar" .}}
+
+<div class="flex-container">
+    <section class="container-header">
+        <div>
+            <a href="/">
+                <h1>Notes</h1>
+            </a>
+            <a href="/notes/create">
+                <h1>+</h2>
+            </a>
+        </div>
+    </section>
+    <section id="cards-container" class="cards-container" data-masonry='{"percentPosition": true }'>
+        {{range $index, $note := .Notes}}
+            <div class="card-wrapper">
+                <div class="card">
+                    <div class="card-header">{{$note.Name}}</div>
+                    <div class="card-body q-note-content">
+                        <artice>{{$note.Content}}</article>
+                    </div>
+                </div>
+            </div>
+        {{end}}
+    </section>
+</div>
+
+{{template "body_end"}}

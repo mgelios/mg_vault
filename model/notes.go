@@ -20,3 +20,8 @@ type Note struct {
 	Tags    []string `json:"tags" bson:"tags"`
 	Author  string   `json:"author" bson:"author"`
 }
+
+type UserNotesResponse struct {
+	User  UserClaims `json:"user"`
+	Notes []Note     `json:"notes"`
+}

@@ -102,6 +102,25 @@ func defineSecuredEndpoints(router *chi.Mux) {
 				slog.Error(err.Error())
 			}
 		})
+		r.Get("/notes", func(w http.ResponseWriter, r *http.Request) {
+			user := auth.GetUserClaimsFromContext(r)
+			response := model.UserNotesResponse{}
+			response.Notes, _ = storage.GetAllNotesForUser(user.Id)
+			fmt.Print(response)
+			response.User = user
+			if err := templates.ExecuteTemplate(w, "notes.html", response); err != nil {
+				slog.Error(err.Error())
+			}
+		})
+		r.Get("/notes/create", func(w http.ResponseWriter, r *http.Request) {
+			user := auth.GetUserClaimsFromContext(r)
+			response := model.UserNotesResponse{
+				User: user,
+			}
+			if err := templates.ExecuteTemplate(w, "edit_note.html", response); err != nil {
+				slog.Error(err.Error())
+			}
+		})
 		r.Post("/api/v1/qnotes", func(w http.ResponseWriter, r *http.Request) {
 			user := auth.GetUserClaimsFromContext(r)
 			var quickNote model.QuickNote
@@ -115,6 +134,21 @@ func defineSecuredEndpoints(router *chi.Mux) {
 
 			storage.CreateQuickNote(quickNote)
 			w.Header().Add("HX-Redirect", "/qnotes")
+		})
+
+		r.Post("/api/v1/notes", func(w http.ResponseWriter, r *http.Request) {
+			user := auth.GetUserClaimsFromContext(r)
+			var note model.Note
+			err := json.NewDecoder(r.Body).Decode(&note)
+			if err != nil {
+				slog.Error(err.Error())
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
+			note.Author = user.Id
+
+			storage.CreateNote(note)
+			w.Header().Add("HX-Redirect", "/notes")
 		})
 		DefineProtectedUserRoutes(r)
 	})

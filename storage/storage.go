@@ -82,3 +82,24 @@ func CreateQuickNote(qnote model.QuickNote) error {
 	_, err := collection.InsertOne(context.Background(), qnote)
 	return err
 }
+
+func CreateNote(note model.Note) error {
+	slog.Debug(note.Name)
+	collection := mongo_client.Database("mg_vault").Collection("notes")
+	_, err := collection.InsertOne(context.Background(), note)
+	return err
+}
+
+func GetAllNotesForUser(userId string) ([]model.Note, error) {
+	slog.Debug("Getting quick notes")
+	collection := mongo_client.Database("mg_vault").Collection("notes")
+	filter := bson.D{{"author", userId}}
+	cursor, err := collection.Find(context.Background(), filter)
+	if err != nil {
+		slog.Error("Error during notes extraction")
+		return nil, err
+	}
+	var results []model.Note
+	err = cursor.All(context.Background(), &results)
+	return results, err
+}
