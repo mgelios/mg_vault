@@ -19,7 +19,7 @@
             {{range $index, $qnote := .Notes}}
                 <div class="card-wrapper">
                     <div class="card">
-                        <div class="card-header">{{$qnote.Name}}</div>
+                        <div class="card-header"><a href="qnotes/edit?qnote_id={{$qnote.Id}}">{{$qnote.Name}}</a></div>
                         <div class="card-body q-note-content">
                             <artice>{{$qnote.Content}}</article>
                         </div>

@@ -1,0 +1,36 @@
+{{define "note_form_inputs"}}
+    <div class="input-wrapper">
+        <h2>Name:</h2>
+        <input type="text" name="name" placeholder="Enter note name" value="{{.Note.Name}}" required>
+    </div>
+    <div class="input-wrapper">
+        <h2>Path:</h2>
+        <input type="text" id="input-path-part" placeholder="Enter path part" />
+        <ul id="path-parts">
+            {{range $index, $pathPart := .Note.Path}}
+                <li>{{$pathPart}}<button class="delete-button">X</button></li>
+            {{end}}
+            {{range $index, $pathPart := .Note.Path}}
+                <input type="hidden" value="{{$pathPart}}" name="path[{{$index}}]">
+            {{end}}
+        </ul>
+    </div>
+    <div class="input-wrapper">
+        <h2>Tags:</h2>
+        <input type="text" id="input-tag" placeholder="Enter tag name" />
+        <ul id="tags">
+            {{range $index, $tag := .Note.Tags}}
+                <li>{{$tag}}<button class="delete-button">X</button></li>
+            {{end}}
+            {{range $index, $tag := .Note.Tags}}
+                <input type="hidden" value="{{$tag}}" name="tags[{{$index}}]">
+            {{end}}
+        </ul>
+    </div>
+    <div class="input-wrapper">
+        <h2>Content:</h2>
+        <textarea id="content" name="content" placeholder="# Hi" rows="20" required>{{.Note.Content}}</textarea>
+        <div id="content-preview"></div>
+    </div>
+    <input type="hidden" name="id" value={{.Note.Id}}>
+{{end}}

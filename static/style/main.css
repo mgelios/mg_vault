@@ -194,6 +194,11 @@ h1, h2, h3, h4, h5, h6, p {
     margin: .1em;
 }
 
+a {
+    text-decoration: none;
+    color: var(--light-3);
+}
+
 .text-input {
     flex: 1 1 auto;
     width: 1%;
@@ -289,7 +294,7 @@ h1, h2, h3, h4, h5, h6, p {
     background-color: var(--dark-5);
 }
 
-.card a, .card .cheatsheet-item {
+.card-body a, .card-body .cheatsheet-item {
     display: block;
     padding: .5em;
     border-color: var(--dark-5);
@@ -299,15 +304,15 @@ h1, h2, h3, h4, h5, h6, p {
     color: var(--light-3);
 }
 
-.card a:last-child, .card .cheatsheet-item:last-child {
+.card-body a:last-child, .card .cheatsheet-item:last-child {
     border-bottom-width: 0;
 }
 
-.card a:hover {
+.card-body a:hover {
     background-color: var(--dark-4-5);
 }
 
-.card a:active {
+.card-body a:active {
     background-color: var(--dark-2-5);
 }
 

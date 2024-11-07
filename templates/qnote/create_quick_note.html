@@ -13,15 +13,7 @@
     </section>
     <section class="cards-container">
         <form hx-post="/api/v1/qnotes" hx-ext="json-enc-custom">
-            <div class="input-wrapper">
-                <h2>Name:</h2>
-                <input type="text" placeholder="Name" name="name" required>
-            </div>
-            <div class="input-wrapper">
-                <h2>Content:</h2>
-                <input type="text" placeholder="Content" name="content" required>
-            </div>
-            <button type="submit" class="button">Create</button>
+            {{template "quick_note_form_inputs" .}}
         </form>
     </section>
 </div>

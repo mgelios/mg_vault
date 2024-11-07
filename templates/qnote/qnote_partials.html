@@ -1,0 +1,12 @@
+{{define "quick_note_form_inputs"}}
+    <div class="input-wrapper">
+        <h2>Name:</h2>
+        <input type="text" placeholder="Name" name="name" value="{{.Note.Name}}" required>
+    </div>
+    <div class="input-wrapper">
+        <h2>Content:</h2>
+        <input type="text" placeholder="Content" name="content" value="{{.Note.Content}}" required>
+    </div>
+    <input type="hidden" name="id" value={{.Note.Id}}>
+    <button type="submit" class="button">Create</button>
+{{end}}

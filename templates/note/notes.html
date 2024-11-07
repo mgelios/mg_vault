@@ -18,7 +18,7 @@
         {{range $index, $note := .Notes}}
             <div class="card-wrapper">
                 <div class="card">
-                    <div class="card-header">{{$note.Name}}</div>
+                    <div class="card-header"><a href="notes/edit?note_id={{$note.Id}}">{{$note.Name}}</a></div>
                     <div class="card-body q-note-content">
                         <artice>{{$note.Content}}</article>
                     </div>

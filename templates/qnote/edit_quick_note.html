@@ -1,0 +1,21 @@
+{{template "header"}}
+{{template "body_start"}}
+
+{{template "navbar" .}}
+
+<div class="flex-container">
+    <section class="container-header">
+        <div>
+            <a href="/">
+                <h1>Quick Note</h1>
+            </a>
+        </div>
+    </section>
+    <section class="cards-container">
+        <form hx-put="/api/v1/qnotes" hx-ext="json-enc-custom">
+            {{template "quick_note_form_inputs" .}}
+        </form>
+    </section>
+</div>
+
+{{template "body_end"}}

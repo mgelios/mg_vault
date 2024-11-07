@@ -1,0 +1,30 @@
+{{template "header"}}
+{{template "body_start"}}
+
+{{template "navbar" .}}
+
+
+<div class="flex-container">
+    <section class="container-header">
+        <div>
+            <a href="/">
+                <h1>Note</h1>
+            </a>
+        </div>
+    </section>
+    <section class="cards-container">
+        <form  hx-post="/api/v1/notes" hx-ext="json-enc-custom">
+            {{template "note_form_inputs" .}}
+            <button type="submit" class="button">Create</button>
+        </form>
+    </section>
+</div>
+
+<script>
+    declareTagInputForElements("tags", "input-tag", "tags");
+    declareTagInputForElements("path-parts", "input-path-part", "path");
+
+    declareMarkdownPreview("content", "content-preview");
+</script>
+
+{{template "body_end"}}
