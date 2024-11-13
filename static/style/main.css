@@ -446,13 +446,13 @@ textarea {
     padding: .5em;
 }
 
-.input-wrapper ul {
+.input-wrapper #path-parts, .input-wrapper #tags {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
-.input-wrapper li {
+.input-wrapper #path-parts li, .input-wrapper #tags li{
     display: inline-block;
     background-color: var(--dark-3);
     color: var(--light-3);
@@ -462,7 +462,7 @@ textarea {
     font-size: 1em;
 }
 
-.input-wrapper li:hover {
+.input-wrapper #path-parts li:hover, .input-wrapper #tags li:hover {
     background-color: var(--dark-3-5);
 }
 
@@ -481,6 +481,23 @@ textarea {
 .input-wrapper #content-preview {
     flex: 1 1;
     line-break: anywhere;
+}
+
+#content-preview a {
+    display: inline-block;
+    background-color: var(--dark-3);
+    color: var(--light-3);
+    border-radius: .5em;
+    padding: .25em;
+    font-size: 1em;
+}
+
+.note-view {
+    padding: .5em;
+}
+
+.note-view div {
+    padding: .5em;
 }
 
 .input-wrapper h2 {

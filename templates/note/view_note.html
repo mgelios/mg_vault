@@ -1,0 +1,40 @@
+{{template "header"}}
+{{template "body_start"}}
+
+{{template "navbar" .}}
+
+
+<div class="flex-container">
+    <section class="container-header">
+        <div>
+            <a href="/">
+                <h1>Note</h1>
+            </a>
+        </div>
+    </section>
+    <section class="cards-container note-view">
+        <div id="note-name">
+            <h1>{{.Note.Name}} <a href="/notes/edit?note_id={{.Note.Id}}">✎</a></h1>
+        </div>
+        <div>
+            Path:
+            {{range $pathPartIndex, $pathPart := .Note.Path}}
+                <span class="badge backgroud-dark-3-5 text-color-light-1">{{$pathPart}}</span>
+            {{end}}
+        </div>
+        <div>
+            Tags:
+            {{range $tagIndex, $tag := .Note.Tags}}
+                <span class="badge backgroud-dark-3-5 text-color-light-1">{{$tag}}</span>
+            {{end}}
+        </div>
+        <div id="note-content"></div>
+    </section>
+</div>
+
+<script>
+    const target = document.getElementById("note-content");
+    target.innerHTML = marked.parse("{{.Note.Content}}");
+</script>
+
+{{template "body_end"}}

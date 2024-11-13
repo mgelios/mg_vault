@@ -21,19 +21,29 @@ func DefineProtectedNoteRoutes(r chi.Router) {
 			slog.Error(err.Error())
 		}
 	})
+	r.Get("/notes/view", func(w http.ResponseWriter, r *http.Request) {
+		user := auth.GetUserClaimsFromContext(r)
+		response := model.UserNoteResponse{
+			User: user,
+		}
+		response.Note, _ = storage.GetNoteForUserWithId(user.Id, r.URL.Query().Get("note_id"))
+		if err := templates.ExecuteTemplate(w, "view_note.html", response); err != nil {
+			slog.Error(err.Error())
+		}
+	})
 	r.Get("/notes/create", func(w http.ResponseWriter, r *http.Request) {
 		user := auth.GetUserClaimsFromContext(r)
-		response := model.UserNoteEditResponse{
+		response := model.UserNoteResponse{
 			User: user,
 			Note: model.Note{},
 		}
-		if err := templates.ExecuteTemplate(w, "edit_note.html", response); err != nil {
+		if err := templates.ExecuteTemplate(w, "create_note.html", response); err != nil {
 			slog.Error(err.Error())
 		}
 	})
 	r.Get("/notes/edit", func(w http.ResponseWriter, r *http.Request) {
 		user := auth.GetUserClaimsFromContext(r)
-		response := model.UserNoteEditResponse{
+		response := model.UserNoteResponse{
 			User: user,
 		}
 		response.Note, _ = storage.GetNoteForUserWithId(user.Id, r.URL.Query().Get("note_id"))
@@ -65,6 +75,10 @@ func DefineProtectedNoteRoutes(r chi.Router) {
 		}
 		note.Author = user.Id
 		storage.UpdateNote(note)
+		w.Header().Add("HX-Redirect", "/notes")
+	})
+	r.Delete("/api/v1/notes", func(w http.ResponseWriter, r *http.Request) {
+		storage.DeleteNoteById(r.URL.Query().Get("note_id"))
 		w.Header().Add("HX-Redirect", "/notes")
 	})
 }

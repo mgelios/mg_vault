@@ -44,7 +44,7 @@ type UserNotesResponse struct {
 	User  UserClaims `json:"user"`
 	Notes []Note     `json:"notes"`
 }
-type UserNoteEditResponse struct {
+type UserNoteResponse struct {
 	User UserClaims `json:"user"`
 	Note Note       `json:"note"`
 }

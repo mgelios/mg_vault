@@ -48,3 +48,11 @@ func UpdateQuickNote(qnote model.QuickNote) error {
 	_, err := collection.UpdateByID(context.Background(), id, bson.M{"$set": quickNoteUpdate})
 	return err
 }
+
+func DeleteQuickNoteById(id string) error {
+	collection := mongo_client.Database("mg_vault").Collection("quick_notes")
+	idFilter, _ := primitive.ObjectIDFromHex(id)
+	filter := bson.D{{"_id", idFilter}}
+	_, err := collection.DeleteOne(context.Background(), filter)
+	return err
+}

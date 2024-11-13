@@ -69,4 +69,8 @@ func DefineQuickNotesProtectedRoutes(r chi.Router) {
 		storage.UpdateQuickNote(quickNote)
 		w.Header().Add("HX-Redirect", "/qnotes")
 	})
+	r.Delete("/api/v1/qnotes", func(w http.ResponseWriter, r *http.Request) {
+		storage.DeleteQuickNoteById(r.URL.Query().Get("qnote_id"))
+		w.Header().Add("HX-Redirect", "/qnotes")
+	})
 }

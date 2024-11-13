@@ -2,7 +2,6 @@ package storage
 
 import (
 	"context"
-	"fmt"
 	"log/slog"
 	"mg_vault/model"
 
@@ -34,7 +33,7 @@ func GetAllNotesForUser(userId string) ([]model.Note, error) {
 func GetNoteForUserWithId(userId string, id string) (model.Note, error) {
 	collection := mongo_client.Database("mg_vault").Collection("notes")
 	idFilter, _ := primitive.ObjectIDFromHex(id)
-	filter := bson.D{{"_id", idFilter}, {"author", userId}}
+	filter := bson.D{{"_id", idFilter}}
 	var result model.Note
 	err := collection.FindOne(context.Background(), filter).Decode(&result)
 	return result, err
@@ -50,8 +49,14 @@ func UpdateNote(note model.Note) error {
 		Tags:    note.Tags,
 		Path:    note.Path,
 	}
-
-	fmt.Print(noteUpdate)
 	_, err := collection.UpdateByID(context.Background(), id, bson.M{"$set": noteUpdate})
+	return err
+}
+
+func DeleteNoteById(id string) error {
+	collection := mongo_client.Database("mg_vault").Collection("notes")
+	idFilter, _ := primitive.ObjectIDFromHex(id)
+	filter := bson.D{{"_id", idFilter}}
+	_, err := collection.DeleteOne(context.Background(), filter)
 	return err
 }

@@ -14,6 +14,7 @@
     <section class="cards-container">
         <form hx-post="/api/v1/qnotes" hx-ext="json-enc-custom">
             {{template "quick_note_form_inputs" .}}
+            <button type="submit" class="button">Create</button>
         </form>
     </section>
 </div>
