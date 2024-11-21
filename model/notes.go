@@ -48,3 +48,18 @@ type UserNoteResponse struct {
 	User UserClaims `json:"user"`
 	Note Note       `json:"note"`
 }
+
+type NotesTree struct {
+	Id     string        `json:"id,omitempty" bson:"_id,omitempty"`
+	Author string        `json:"author" bson:"author"`
+	Root   NotesTreeNode `json:"root" bson:"root"`
+}
+
+type NotesTreeUpdate struct {
+	Author string        `json:"author" bson:"author"`
+	Root   NotesTreeNode `json:"root" bson:"root"`
+}
+
+type NotesTreeNode struct {
+	ChildNodes map[string]*NotesTreeNode `json:"child_nodes" bson:"child_nodes"`
+}
