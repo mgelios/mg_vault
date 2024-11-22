@@ -26,6 +26,9 @@ func CreateNote(note model.Note) error {
 	slog.Debug(note.Name)
 	collection := mongo_client.Database("mg_vault").Collection("notes")
 	_, err := collection.InsertOne(context.Background(), note)
+
+	BuildNotesTree(note.Author)
+
 	return err
 }
 
@@ -87,6 +90,40 @@ func UpdateNotesTree(notesTree model.NotesTree) error {
 	}
 	_, err := collection.UpdateByID(context.Background(), id, bson.M{"$set": notesTreeUpdate})
 	return err
+}
+
+func createNotesTreeForUser(userId string) error {
+	collection := mongo_client.Database("mg_vault").Collection("notes_tree")
+	notes_tree := model.NotesTree{
+		Author: userId,
+		Root: model.NotesTreeNode{
+			ChildNodes: map[string]*model.NotesTreeNode{},
+		},
+	}
+	_, err := collection.InsertOne(context.Background(), notes_tree)
+
+	return err
+}
+
+func deleteNotesTreeForUser(userId string) error {
+	collection := mongo_client.Database("mg_vault").Collection("notes_tree")
+	filter := bson.D{{"author", userId}}
+	_, err := collection.DeleteMany(context.Background(), filter)
+	return err
+}
+
+func BuildNotesTree(userId string) {
+	deleteNotesTreeForUser(userId)
+	slog.Info("Deleted all trees for user")
+	createNotesTreeForUser(userId)
+	slog.Info("Create tree for user")
+	notes, err := GetAllNotesForUser(userId)
+	if err == nil {
+		for i := 0; i < len(notes); i++ {
+			addPathEntry(notes[i].Path, userId)
+			slog.Info("Added new path entry")
+		}
+	}
 }
 
 func updatePathEntry(oldPath []string, newPath []string, userId string) {
