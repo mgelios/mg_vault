@@ -26,9 +26,9 @@ func CreateNote(note model.Note) error {
 	slog.Debug(note.Name)
 	collection := mongo_client.Database("mg_vault").Collection("notes")
 	_, err := collection.InsertOne(context.Background(), note)
-
-	BuildNotesTree(note.Author)
-
+	if err == nil {
+		addPathEntry(note.Path, note.Author)
+	}
 	return err
 }
 
@@ -42,7 +42,7 @@ func GetAllNotesForUserInPath(userId string, path []string) ([]model.Note, error
 	return getNotesCollectionWithFilter(filter)
 }
 
-func GetNoteForUserWithId(userId string, id string) (model.Note, error) {
+func GetNoteById(id string) (model.Note, error) {
 	collection := mongo_client.Database("mg_vault").Collection("notes")
 	idFilter, _ := primitive.ObjectIDFromHex(id)
 	filter := bson.D{{"_id", idFilter}}
@@ -54,6 +54,7 @@ func GetNoteForUserWithId(userId string, id string) (model.Note, error) {
 func UpdateNote(note model.Note) error {
 	collection := mongo_client.Database("mg_vault").Collection("notes")
 	id, _ := primitive.ObjectIDFromHex(note.Id)
+	oldNote, _ := GetNoteById(note.Id)
 	noteUpdate := model.NoteUpdate{
 		Name:    note.Name,
 		Author:  note.Author,
@@ -62,14 +63,23 @@ func UpdateNote(note model.Note) error {
 		Path:    note.Path,
 	}
 	_, err := collection.UpdateByID(context.Background(), id, bson.M{"$set": noteUpdate})
+
+	if err == nil {
+		updatePathEntry(oldNote.Path, note.Path, note.Author)
+	}
 	return err
 }
 
-func DeleteNoteById(id string) error {
+func DeleteNoteByUserAndId(id string, userId string) error {
 	collection := mongo_client.Database("mg_vault").Collection("notes")
+	noteToDelete, _ := GetNoteById(id)
 	idFilter, _ := primitive.ObjectIDFromHex(id)
 	filter := bson.D{{"_id", idFilter}}
 	_, err := collection.DeleteOne(context.Background(), filter)
+
+	if err == nil {
+		removePathEntry(noteToDelete.Path, userId)
+	}
 	return err
 }
 
@@ -97,7 +107,8 @@ func createNotesTreeForUser(userId string) error {
 	notes_tree := model.NotesTree{
 		Author: userId,
 		Root: model.NotesTreeNode{
-			ChildNodes: map[string]*model.NotesTreeNode{},
+			ChildNodes:  map[string]*model.NotesTreeNode{},
+			Breadcrumbs: []string{},
 		},
 	}
 	_, err := collection.InsertOne(context.Background(), notes_tree)
@@ -132,27 +143,35 @@ func updatePathEntry(oldPath []string, newPath []string, userId string) {
 }
 
 func addPathEntry(path []string, userId string) {
-	notesTree, _ := GetNotesTreeForUser(userId)
-	currentNode := &notesTree.Root
-	for i := 0; i < len(path); i++ {
-		if currentNode.ChildNodes[path[i]] != nil {
-			currentNode = currentNode.ChildNodes[path[i]]
-		} else {
-			newNode := model.NotesTreeNode{
-				ChildNodes: map[string]*model.NotesTreeNode{},
+	notesTree, err := GetNotesTreeForUser(userId)
+	if err != nil {
+		BuildNotesTree(userId)
+	} else {
+		currentNode := &notesTree.Root
+		for i := 0; i < len(path); i++ {
+			if currentNode.ChildNodes[path[i]] != nil {
+				currentNode = currentNode.ChildNodes[path[i]]
+				currentNode.Entries += 1
+			} else {
+				newNode := model.NotesTreeNode{
+					ChildNodes:  map[string]*model.NotesTreeNode{},
+					Entries:     1,
+					Breadcrumbs: append(currentNode.Breadcrumbs, path[i]),
+				}
+				currentNode.ChildNodes[path[i]] = &newNode
+				currentNode = &newNode
 			}
-			currentNode.ChildNodes[path[i]] = &newNode
-			currentNode = &newNode
 		}
+		UpdateNotesTree(notesTree)
 	}
-	UpdateNotesTree(notesTree)
 }
 
 func removePathEntry(path []string, userId string) {
 	notesTree, _ := GetNotesTreeForUser(userId)
 	currentNode := &notesTree.Root
 	for i := 0; i < len(path); i++ {
-		if len(currentNode.ChildNodes[path[i]].ChildNodes) < 2 {
+		currentNode.ChildNodes[path[i]].Entries -= 1
+		if currentNode.ChildNodes[path[i]].Entries < 1 {
 			delete(currentNode.ChildNodes, path[i])
 			break
 		}

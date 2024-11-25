@@ -43,6 +43,7 @@ type NoteUpdate struct {
 type UserNotesResponse struct {
 	User  UserClaims `json:"user"`
 	Notes []Note     `json:"notes"`
+	Tree  NotesTree  `json:tree`
 }
 type UserNoteResponse struct {
 	User UserClaims `json:"user"`
@@ -61,5 +62,7 @@ type NotesTreeUpdate struct {
 }
 
 type NotesTreeNode struct {
-	ChildNodes map[string]*NotesTreeNode `json:"child_nodes" bson:"child_nodes"`
+	ChildNodes  map[string]*NotesTreeNode `json:"child_nodes" bson:"child_nodes"`
+	Entries     int                       `json:"entries" bson:"entries"`
+	Breadcrumbs []string                  `json:"breadcrumbs" bson:"breadcrumbs"`
 }
