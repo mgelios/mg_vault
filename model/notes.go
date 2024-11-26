@@ -62,7 +62,8 @@ type NotesTreeUpdate struct {
 }
 
 type NotesTreeNode struct {
-	ChildNodes  map[string]*NotesTreeNode `json:"child_nodes" bson:"child_nodes"`
-	Entries     int                       `json:"entries" bson:"entries"`
-	Breadcrumbs []string                  `json:"breadcrumbs" bson:"breadcrumbs"`
+	ChildNodes        map[string]*NotesTreeNode `json:"child_nodes" bson:"child_nodes"`
+	Entries           int                       `json:"entries" bson:"entries"`
+	Breadcrumbs       []string                  `json:"breadcrumbs" bson:"breadcrumbs"`
+	BreadcrumbsString string                    `json:"breadcrums_string" bson:"breadcrumbs_string"`
 }

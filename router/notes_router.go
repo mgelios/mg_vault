@@ -7,6 +7,7 @@ import (
 	"mg_vault/model"
 	"mg_vault/storage"
 	"net/http"
+	"strings"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -14,8 +15,9 @@ import (
 func DefineProtectedNoteRoutes(r chi.Router) {
 	r.Get("/notes", func(w http.ResponseWriter, r *http.Request) {
 		user := auth.GetUserClaimsFromContext(r)
+		path := strings.Split(r.URL.Query().Get("path"), ",")
 		response := model.UserNotesResponse{}
-		response.Notes, _ = storage.GetAllNotesForUser(user.Id)
+		response.Notes, _ = storage.GetAllNotesForUserInPath(user.Id, path)
 		response.Tree, _ = storage.GetNotesTreeForUser(user.Id)
 		response.User = user
 		if err := templates.ExecuteTemplate(w, "notes.html", response); err != nil {

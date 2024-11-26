@@ -4,12 +4,13 @@ import (
 	"context"
 	"log/slog"
 	"mg_vault/model"
+	"strings"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func getNotesCollectionWithFilter(filter bson.D) ([]model.Note, error) {
+func getNotesCollectionWithFilter(filter bson.M) ([]model.Note, error) {
 	slog.Debug("Getting notes")
 	collection := mongo_client.Database("mg_vault").Collection("notes")
 	cursor, err := collection.Find(context.Background(), filter)
@@ -33,12 +34,17 @@ func CreateNote(note model.Note) error {
 }
 
 func GetAllNotesForUser(userId string) ([]model.Note, error) {
-	filter := bson.D{{"author", userId}}
+	filter := bson.M{"author": userId}
 	return getNotesCollectionWithFilter(filter)
 }
 
 func GetAllNotesForUserInPath(userId string, path []string) ([]model.Note, error) {
-	filter := bson.D{{"author", userId}, {"path", bson.M{"$eq": path}}}
+	filter := bson.M{
+		"author": userId,
+		"path": bson.M{
+			"$eq": path,
+		},
+	}
 	return getNotesCollectionWithFilter(filter)
 }
 
@@ -154,9 +160,10 @@ func addPathEntry(path []string, userId string) {
 				currentNode.Entries += 1
 			} else {
 				newNode := model.NotesTreeNode{
-					ChildNodes:  map[string]*model.NotesTreeNode{},
-					Entries:     1,
-					Breadcrumbs: append(currentNode.Breadcrumbs, path[i]),
+					ChildNodes:        map[string]*model.NotesTreeNode{},
+					Entries:           1,
+					Breadcrumbs:       append(currentNode.Breadcrumbs, path[i]),
+					BreadcrumbsString: strings.Join([]string(append(currentNode.Breadcrumbs, path[i])), ","),
 				}
 				currentNode.ChildNodes[path[i]] = &newNode
 				currentNode = &newNode

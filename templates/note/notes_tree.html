@@ -3,13 +3,13 @@
         {{if gt (len $value.ChildNodes) 0}}
             <details class="tree-nav-item is-expandable">
                 <summary class="tree-nav-item-title">
-                    <a class="tree-nav-item-title not-expandable" href="/notes?path={{$value.Breadcrumbs}}">{{$key}}</a>
+                    <a class="tree-nav-item-title not-expandable" href="/notes?path={{$value.BreadcrumbsString}}">{{$key}}</a>
                 </summary>
                 {{template "notes_tree" $value}}
             </details>
         {{else}}
             <div class="tree-nav-item">
-                <a class="tree-nav-item-title not-expandable" href="/notes?path={{$value.Breadcrumbs}}">{{$key}}</a>
+                <a class="tree-nav-item-title not-expandable" href="/notes?path={{$value.BreadcrumbsString}}">{{$key}}</a>
             </div>
         {{end}}
     {{end}}
