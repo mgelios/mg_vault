@@ -1,6 +1,7 @@
 package router
 
 import (
+	"bytes"
 	"encoding/json"
 	"log/slog"
 	"mg_vault/auth"
@@ -53,6 +54,20 @@ func DefineProtectedNoteRoutes(r chi.Router) {
 		if err := templates.ExecuteTemplate(w, "edit_note.html", response); err != nil {
 			slog.Error(err.Error())
 		}
+	})
+	r.Get("/api/v1/notes/export", func(w http.ResponseWriter, r *http.Request) {
+		buffer := &bytes.Buffer{}
+		user := auth.GetUserClaimsFromContext(r)
+		response := model.UserNotesResponse{}
+		response.Notes, _ = storage.GetAllNotesForUser(user.Id)
+		response.Tree, _ = storage.GetNotesTreeForUser(user.Id)
+		response.User = user
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		err := json.NewEncoder(buffer).Encode(response)
+		if err != nil {
+			slog.Error("Error during encoding notes to buffer")
+		}
+		w.Write(buffer.Bytes())
 	})
 	r.Post("/api/v1/notes", func(w http.ResponseWriter, r *http.Request) {
 		user := auth.GetUserClaimsFromContext(r)

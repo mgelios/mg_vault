@@ -257,10 +257,14 @@ a {
     margin: .5em;
 }
 
+.container-tree {
+    flex: 1 1;
+}
+
 .cards-container {
     padding: 0em;
     box-sizing: border-box;
-    width: 100%;
+    flex: 5 5;
 }
 
 .container-header a {
