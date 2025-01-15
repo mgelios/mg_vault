@@ -575,6 +575,10 @@ textarea {
     padding-left: .3em;
 }
 
+.selected-tree-node {
+    background-color: var(--dark-4-5);
+}
+
 .tree-nav-item-title {
     cursor: pointer;
     display: block;

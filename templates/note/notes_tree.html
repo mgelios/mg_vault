@@ -1,28 +1,28 @@
 {{define "notes_tree"}}
     {{range $key, $value := .ChildNodes}}
         {{if gt (len $value.ChildNodes) 0}}
-            <details class="tree-nav-item is-expandable">
+            <details class="tree-nav-item is-expandable expandable-breadcrumbs" breadcrumbs="{{$value.BreadcrumbsString}}">
                 <summary class="tree-nav-item-title">
-                    <a class="tree-nav-item-title not-expandable" href="/notes?path={{$value.BreadcrumbsString}}" breadcrumbs="{{$value.BreadcrumbsString}}">{{$key}}</a>
+                    <a class="tree-nav-item-title not-expandable selectable-breadcrumbs" href="/notes?path={{$value.BreadcrumbsString}}" breadcrumbs="{{$value.BreadcrumbsString}}">{{$key}}</a>
                 </summary>
                 {{template "notes_tree" $value}}
             </details>
         {{else}}
             <div class="tree-nav-item">
-                <a class="tree-nav-item-title not-expandable" href="/notes?path={{$value.BreadcrumbsString}}" breadcrumbs="{{$value.BreadcrumbsString}}">{{$key}}</a>
+                <a class="tree-nav-item-title not-expandable selectable-breadcrumbs" href="/notes?path={{$value.BreadcrumbsString}}" breadcrumbs="{{$value.BreadcrumbsString}}">{{$key}}</a>
             </div>
         {{end}}
     {{end}}
 {{end}}
 
 {{define "notes_nav"}}
-    <section class="container-tree">
+    <section class="container-tree" id="notes-tree-nav">
         <nav class="tree-nav">
             {{template "notes_tree" .Tree.Root}}
         </nav>
     </section>
 
     <script>
-        
+        showActiveTreeSelection("expandable-breadcrumbs", "selectable-breadcrumbs");
     </script>
 {{end}}

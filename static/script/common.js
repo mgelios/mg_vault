@@ -49,3 +49,26 @@ function declareMarkdownPreview(sourceInput, targetElement) {
 
     target.innerHTML = marked.parse(source.value);
 }
+
+function showActiveTreeSelection(expandableClassName, selectedClassName) {
+    const selectedElements = document.getElementsByClassName(selectedClassName);
+    const urlParams = new URLSearchParams(window.location.search);
+    const treePath = urlParams.get("path");
+
+    console.log(selectedElements);
+
+    Array.from(selectedElements).forEach((element) => {
+        let breadcrumbs = element.attributes["breadcrumbs"];
+        if (breadcrumbs && breadcrumbs.value == treePath) {
+            element.classList.add("selected-tree-node");
+        }
+    });
+
+    const expandableElements = document.getElementsByClassName(expandableClassName);
+    Array.from(expandableElements).forEach((element) => {
+        let breadcrumbs = element.attributes["breadcrumbs"];
+        if (breadcrumbs && treePath.startsWith(breadcrumbs.value)) {
+            element.open = true;
+        }
+    });
+}
