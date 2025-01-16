@@ -13,6 +13,13 @@
     </section>
     <section class="cards-container">
         {{.}}
+
+        <form action="/api/v1/notes/export" method="get">
+            <button type="submit" class="button">Export notes</button>
+        </form>
+        <form action="/api/v1/notes/import" method="post">
+            <button type="submit" class="button">Import notes for current User</button>
+        </form>
     </section>
 </div>
 
