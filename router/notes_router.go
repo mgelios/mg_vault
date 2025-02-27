@@ -21,6 +21,7 @@ func DefineProtectedNoteRoutes(r chi.Router) {
 		response.Notes, _ = storage.GetAllNotesForUserInPath(user.Id, path)
 		response.Tree, _ = storage.GetNotesTreeForUser(user.Id)
 		response.User = user
+		response.PageTitle = "Notes"
 		if err := templates.ExecuteTemplate(w, "notes.html", response); err != nil {
 			slog.Error(err.Error())
 		}
@@ -31,6 +32,7 @@ func DefineProtectedNoteRoutes(r chi.Router) {
 			User: user,
 		}
 		response.Note, _ = storage.GetNoteById(r.URL.Query().Get("note_id"))
+		response.PageTitle = response.Note.Name
 		if err := templates.ExecuteTemplate(w, "view_note.html", response); err != nil {
 			slog.Error(err.Error())
 		}
@@ -38,8 +40,9 @@ func DefineProtectedNoteRoutes(r chi.Router) {
 	r.Get("/notes/create", func(w http.ResponseWriter, r *http.Request) {
 		user := auth.GetUserClaimsFromContext(r)
 		response := model.UserNoteResponse{
-			User: user,
-			Note: model.Note{},
+			User:      user,
+			Note:      model.Note{},
+			PageTitle: "Create Note",
 		}
 		if err := templates.ExecuteTemplate(w, "create_note.html", response); err != nil {
 			slog.Error(err.Error())
@@ -51,6 +54,7 @@ func DefineProtectedNoteRoutes(r chi.Router) {
 			User: user,
 		}
 		response.Note, _ = storage.GetNoteById(r.URL.Query().Get("note_id"))
+		response.PageTitle = "Edit Note"
 		if err := templates.ExecuteTemplate(w, "edit_note.html", response); err != nil {
 			slog.Error(err.Error())
 		}

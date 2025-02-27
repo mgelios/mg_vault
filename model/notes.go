@@ -14,13 +14,15 @@ type QuickNoteUpdate struct {
 }
 
 type UserQuckNotesResponse struct {
-	Notes []QuickNote `json:"qnotes"`
-	User  UserClaims  `json:"user"`
+	Notes     []QuickNote `json:"qnotes"`
+	User      UserClaims  `json:"user"`
+	PageTitle string      `json:"page_title"`
 }
 
 type UserQuckNoteEditResponse struct {
-	Note QuickNote  `json:"qnote"`
-	User UserClaims `json:"user"`
+	Note      QuickNote  `json:"qnote"`
+	User      UserClaims `json:"user"`
+	PageTitle string     `json:"page_title"`
 }
 
 type Note struct {
@@ -41,13 +43,15 @@ type NoteUpdate struct {
 }
 
 type UserNotesResponse struct {
-	User  UserClaims `json:"user"`
-	Notes []Note     `json:"notes"`
-	Tree  NotesTree  `json:tree`
+	User      UserClaims `json:"user"`
+	Notes     []Note     `json:"notes"`
+	Tree      NotesTree  `json:tree`
+	PageTitle string     `json:"page_title"`
 }
 type UserNoteResponse struct {
-	User UserClaims `json:"user"`
-	Note Note       `json:"note"`
+	User      UserClaims `json:"user"`
+	Note      Note       `json:"note"`
+	PageTitle string     `json:"page_title"`
 }
 
 type NotesTree struct {

@@ -17,6 +17,7 @@ func DefineQuickNotesProtectedRoutes(r chi.Router) {
 		response := model.UserQuckNotesResponse{}
 		response.Notes, _ = storage.GetAllQuickNotesForUser(user.Id)
 		response.User = user
+		response.PageTitle = "Quick Notes"
 		if err := templates.ExecuteTemplate(w, "quick_notes.html", response); err != nil {
 			slog.Error(err.Error())
 		}
@@ -24,8 +25,9 @@ func DefineQuickNotesProtectedRoutes(r chi.Router) {
 	r.Get("/qnotes/create", func(w http.ResponseWriter, r *http.Request) {
 		user := auth.GetUserClaimsFromContext(r)
 		response := model.UserQuckNoteEditResponse{
-			User: user,
-			Note: model.QuickNote{},
+			User:      user,
+			Note:      model.QuickNote{},
+			PageTitle: "Create Quick Note",
 		}
 		if err := templates.ExecuteTemplate(w, "create_quick_note.html", response); err != nil {
 			slog.Error(err.Error())
@@ -37,6 +39,7 @@ func DefineQuickNotesProtectedRoutes(r chi.Router) {
 			User: user,
 		}
 		response.Note, _ = storage.GetQuickNoteForUserWithId(user.Id, r.URL.Query().Get("qnote_id"))
+		response.PageTitle = response.Note.Name
 		if err := templates.ExecuteTemplate(w, "edit_quick_note.html", response); err != nil {
 			slog.Error(err.Error())
 		}

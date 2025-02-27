@@ -1,5 +1,7 @@
 /* constants section */
 :root {
+    --dark-0: hsl(40 0% 0%);
+    --dark-0-5: hsl(40 0% 5%);
     --dark-1: hsl(40 0% 10%);
     --dark-1-5: hsl(40 0% 12.5%);
     --dark-2: hsl(40 0% 15%);
