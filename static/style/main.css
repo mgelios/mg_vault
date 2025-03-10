@@ -537,8 +537,25 @@ textarea {
     position: relative;
 }
 
-.tree-nav-item .not-expandable {
+.tree-nav-item a {
     padding-left: 1em;
+}
+
+.tree-nav-item .not-expandable::before {
+    position: absolute;
+    will-change: transform;
+    transition: transform 300ms ease;
+    content: ">";
+    left: 0;
+    display: inline-block;
+    width: 1em;
+    text-align: center;
+    padding-left: .3em;
+    line-height: 1.75em;
+}
+
+.tree-nav-item .not-expandable a {
+    padding-left: 2.5em;
 }
 
 .tree-nav-item.is-expandable::before {
@@ -579,6 +596,7 @@ textarea {
 
 .selected-tree-node {
     background-color: var(--dark-4-5);
+    border-radius: .25em;
 }
 
 .tree-nav-item-title {

@@ -3,13 +3,13 @@
         {{if gt (len $value.ChildNodes) 0}}
             <details class="tree-nav-item is-expandable expandable-breadcrumbs" breadcrumbs="{{$value.BreadcrumbsString}}">
                 <summary class="tree-nav-item-title">
-                    <a class="tree-nav-item-title not-expandable selectable-breadcrumbs" href="/notes?path={{$value.BreadcrumbsString}}" breadcrumbs="{{$value.BreadcrumbsString}}">{{$key}}</a>
+                    <a class="tree-nav-item-title selectable-breadcrumbs" href="/notes?path={{$value.BreadcrumbsString}}" breadcrumbs="{{$value.BreadcrumbsString}}">{{$key}}</a>
                 </summary>
                 {{template "notes_tree" $value}}
             </details>
         {{else}}
-            <div class="tree-nav-item">
-                <a class="tree-nav-item-title not-expandable selectable-breadcrumbs" href="/notes?path={{$value.BreadcrumbsString}}" breadcrumbs="{{$value.BreadcrumbsString}}">{{$key}}</a>
+            <div class="tree-nav-item not-expandable">
+                <a class="tree-nav-item-title selectable-breadcrumbs" href="/notes?path={{$value.BreadcrumbsString}}" breadcrumbs="{{$value.BreadcrumbsString}}">{{$key}}</a>
             </div>
         {{end}}
     {{end}}
