@@ -40,14 +40,22 @@ function declareTagInputForElements(tagsContainer, textInput, hiddenInput) {
 }
 
 function declareMarkdownPreview(sourceInput, targetElement) {
-    const source = document.getElementById(sourceInput);
-    const target = document.getElementById(targetElement);
+    const editor = document.getElementById(sourceInput);
+    const preview = document.getElementById(targetElement);
+    const mdit = window.markdownit();
+    const visualizer = document.querySelector(".code-editor code");
 
-    source.addEventListener('input', function () {
-       target.innerHTML = marked.parse(source.value);
+    editor.addEventListener("input", (e) => {
+        preview.innerHTML = mdit.render(editor.value);
+        visualizer.innerHTML = e.target.value;
+        Prism.highlightAll();
+
+        if (editor.offsetHeight < editor.scrollHeight) {
+            editor.style.height = `${editor.scrollHeight}px`;
+        }
     })
 
-    target.innerHTML = marked.parse(source.value);
+    editor.dispatchEvent(new Event("input"));
 }
 
 function showActiveTreeSelection(expandableClassName, selectedClassName) {

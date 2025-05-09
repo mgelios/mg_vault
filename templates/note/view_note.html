@@ -34,7 +34,7 @@
 
 <script>
     const target = document.getElementById("note-content");
-    target.innerHTML = marked.parse("{{.Note.Content}}");
+    target.innerHTML = window.markdownit().render("{{.Note.Content}}");
 </script>
 
 {{template "body_end"}}

@@ -14,8 +14,8 @@
     </section>
     <section class="cards-container">
         <form  hx-post="/api/v1/notes" hx-ext="json-enc-custom">
-            {{template "note_form_inputs" .}}
             <button type="submit" class="button">Create</button>
+            {{template "note_form_inputs" .}}
         </form>
     </section>
 </div>

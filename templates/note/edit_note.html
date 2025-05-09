@@ -13,12 +13,12 @@
         </div>
     </section>
     <section class="cards-container">
+        <button class="button backgroud-red-1" hx-delete="/api/v1/notes?note_id={{.Note.Id}}">Delete</button>
         <form  hx-put="/api/v1/notes" hx-ext="json-enc-custom">
-            {{template "note_form_inputs" .}}
             <input type="hidden" name="id" value={{.Note.Id}}>
             <button type="submit" class="button">Update</button>
+            {{template "note_form_inputs" .}}
         </form>
-        <button class="button backgroud-red-1" hx-delete="/api/v1/notes?note_id={{.Note.Id}}">Delete</button>
     </section>
 </div>
 

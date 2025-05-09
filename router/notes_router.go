@@ -84,7 +84,8 @@ func DefineProtectedNoteRoutes(r chi.Router) {
 		}
 		note.Author = user.Id
 		storage.CreateNote(note)
-		w.Header().Add("HX-Redirect", "/notes")
+		var path = strings.Join([]string(append(note.Path)), ",")
+		w.Header().Add("HX-Redirect", "/notes?path="+path)
 	})
 	r.Put("/api/v1/notes", func(w http.ResponseWriter, r *http.Request) {
 		user := auth.GetUserClaimsFromContext(r)
@@ -97,7 +98,8 @@ func DefineProtectedNoteRoutes(r chi.Router) {
 		}
 		note.Author = user.Id
 		storage.UpdateNote(note)
-		w.Header().Add("HX-Redirect", "/notes")
+		var path = strings.Join([]string(append(note.Path)), ",")
+		w.Header().Add("HX-Redirect", "/notes?path="+path)
 	})
 	r.Delete("/api/v1/notes", func(w http.ResponseWriter, r *http.Request) {
 		user := auth.GetUserClaimsFromContext(r)
