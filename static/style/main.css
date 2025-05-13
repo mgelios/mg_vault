@@ -448,7 +448,7 @@ textarea {
 
 .navbar nav ul li a {
     text-decoration: none;
-    color: var(--light-3);
+    color: var(--orange-4);
 }
 
 .input-wrapper {
@@ -536,7 +536,7 @@ textarea {
     position: absolute;
     will-change: transform;
     transition: transform 300ms ease;
-    content: ">";
+    content: " ";
     left: 0;
     display: inline-block;
     width: 1em;
@@ -545,7 +545,7 @@ textarea {
     line-height: 1.75em;
 }
 
-.tree-nav-item .not-expandable a {
+.tree-nav .not-expandable a {
     padding-left: 2.5em;
 }
 
@@ -631,6 +631,54 @@ textarea {
     width: 100%;
     height: 100%;
     background-color: transparent;
+}
+
+#note-name h1 {
+    color: var(--red-5);
+}
+
+#note-content {
+    h1 {
+        color: var(--orange-5);
+    }
+    h2 {
+        color: var(--orange-3);
+    }
+    h3 {
+        color: var(--red-3);
+    }
+    h4 {
+        color: var(--red-3);
+    }
+    h5 {
+        color: var(--orange-2);
+    }
+    h6 {
+        color: var(--orange-1);
+    }
+    table, th, td {
+        border: 1px solid var(--light-1);
+        border-collapse: collapse;
+    }
+
+    table {
+        margin: 1em;
+    }
+    th {
+        background-color: var(--dark-3);
+        padding: .25em .5em;
+    }
+    td {
+        padding: .25em .5em;
+    }
+
+    ul {
+        list-style-type: disc;
+    }
+
+    li:has(ul) {
+        list-style-type: none;
+    }
 }
 
 @media only screen and (max-width: 600px) {
