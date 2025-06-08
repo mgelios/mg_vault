@@ -117,8 +117,7 @@ func UpdateNote(w http.ResponseWriter, r *http.Request) {
 	}
 	note.Author = user.Id
 	storage.UpdateNote(note)
-	var path = strings.Join([]string(append(note.Path)), ",")
-	w.Header().Add("HX-Redirect", "/notes?path="+path)
+	w.Header().Add("HX-Redirect", "/notes/view?note_id="+note.Id)
 }
 
 func DeleteNote(w http.ResponseWriter, r *http.Request) {

@@ -18,8 +18,14 @@
         </div>
         <div>
             Path:
+            {{$path := ""}}
             {{range $pathPartIndex, $pathPart := .Note.Path}}
-                <span class="badge backgroud-dark-3-5 text-color-light-1">{{$pathPart}}</span>
+                {{if eq (len $path) 0}}
+                    {{$path = $pathPart}}
+                {{else}}
+                    {{$path = (printf "%v,%v" $path $pathPart)}}
+                {{end}}
+                <span class="badge backgroud-dark-3-5 text-color-light-1"><a href="/notes?path={{$path}}">{{$pathPart}}</a></span>
             {{end}}
         </div>
         <div>
