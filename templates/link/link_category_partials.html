@@ -1,0 +1,55 @@
+{{define "view_link_category_content"}}
+    <div class="flex-container">
+        <section class="container-header">
+            <h1>{{.Name}} Links</h1>
+        </section>
+        <section class="links-container">
+            {{range $index, $link := .Links}}
+                <a href="{{$link.Url}}">
+                    <h3>{{$link.Name}}</h3>
+                    <p>{{$link.Name}}</p>
+                </a>
+            {{end}}
+        </section>
+    </div>
+
+    <div class="flex-container">
+        <section class="container-header">
+            <h1>{{.Name}} Subcategories</h1>
+        </section>
+    </div>
+
+    <div class="flex-container">
+        <section class="container-header">
+            <h1>{{.Name}} Cards</h1>
+        </section>
+        <section class="cards-container">
+            {{range $index, $link := .Links}}
+                <div class="card_wrapper">
+
+                </div>
+            {{end}}
+        </section>
+    </div>
+
+    <div class="flex-container">
+        <section class="container-header">
+            <h1><a href="./links/edit?category_id={{.Id}}"> Edit </h1>
+        </section>
+    </div>
+{{end}}
+
+
+{{define "link_category_form_inputs"}}
+    <div class="input-wrapper">
+        <h2>Name:</h2>
+        <input type="text" name="name" placeholder="Enter note name" value="{{.LinkCategory.Name}}" required>
+    </div>
+    <div class="input-wrapper">
+        <h2>Links:</h2>
+    </div>
+    <div class="input-wrapper">
+        <h2>LinkGroups:</h2>
+    </div>
+{{end}}
+

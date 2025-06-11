@@ -7,6 +7,7 @@ import (
 	"log/slog"
 	"mg_vault/auth"
 	"mg_vault/model"
+	"mg_vault/storage"
 	"net/http"
 	"os"
 	"time"
@@ -57,13 +58,21 @@ func RunServer() {
 
 func definePublicEndpoints(router *chi.Mux) {
 	slog.Info("Starting init of public endpoints")
+
+	//TODO: refactor place to init root category
+	storage.InitRootLinkCategoryIfAbsent()
+
 	router.Handle("/static/*", http.StripPrefix("/static/", fileServer))
 	router.Group(func(r chi.Router) {
 		r.Use(jwtauth.Verifier(auth.TokenAuth))
 
 		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 			user := auth.GetUserClaimsFromContext(r)
-			responseModel := model.MainPageResponse{User: user}
+			linkCategory, _ := storage.GetRootLinkCategory()
+			responseModel := model.MainPageResponse{
+				User:         user,
+				LinkCategory: linkCategory,
+			}
 			if err := templates.ExecuteTemplate(w, "index.html", responseModel); err != nil {
 				slog.Error(err.Error())
 			}
@@ -81,5 +90,6 @@ func defineSecuredEndpoints(router *chi.Mux) {
 		DefineQuickNotesProtectedRoutes(r)
 		DefineProtectedNoteRoutes(r)
 		DefineProtectedUserRoutes(r)
+		DefineProtectedLinkCategoryRoutes(r)
 	})
 }

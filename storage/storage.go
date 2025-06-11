@@ -37,6 +37,8 @@ func initMongoClient() *mongo.Client {
 	client.Database("mg_vault").CreateCollection(ctx, "notes")
 	client.Database("mg_vault").CreateCollection(ctx, "notes_tree")
 	client.Database("mg_vault").CreateCollection(ctx, "quick_notes")
+	client.Database("mg_vault").CreateCollection(ctx, "link_categories")
+
 	if err != nil {
 		slog.Error("Error while creating init collections")
 	}

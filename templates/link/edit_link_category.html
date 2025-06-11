@@ -1,0 +1,26 @@
+{{template "header" "Hi, main page"}}
+{{template "body_start"}}
+
+{{template "navbar" .}}
+
+<div class="flex-container">
+    <section class="container-header">
+        <div>
+            <a href="/">
+                <h1>{{.LinkCategory.Name}} Edit</h1>
+            </a>
+        </div>
+    </section>
+    <section class="cards-container">
+        <button class="button backgroud-red-1" hx-delete="/api/v1/links/category?category_id={{.LinkCategory.Id}}">Delete</button>
+        <form  hx-put="/api/v1/links/category" hx-ext="json-enc-custom">
+            <input type="hidden" name="id" value={{.LinkCategory.Id}}>
+            <button type="submit" class="button">Update</button>
+            {{template "link_category_form_inputs" .}}
+        </form>
+    </section>
+</div>
+
+<script>
+</script>
+{{template "body_end"}}

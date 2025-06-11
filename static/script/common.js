@@ -58,6 +58,22 @@ function declareMarkdownPreview(sourceInput, targetElement) {
     editor.dispatchEvent(new Event("input"));
 }
 
+function declareCodeEditor(sourceInput) {
+    const editor = document.getElementById(sourceInput);
+    const visualizer = document.querySelector(".code-editor code");
+
+    editor.addEventListener("input", (e) => {
+        visualizer.innerHTML = e.target.value;
+        Prism.highlightAll();
+
+        if (editor.offsetHeight < editor.scrollHeight) {
+            editor.style.height = `${editor.scrollHeight}px`;
+        }
+    })
+
+    editor.dispatchEvent(new Event("input"));
+}
+
 function showActiveTreeSelection(expandableClassName, selectedClassName) {
     const selectedElements = document.getElementsByClassName(selectedClassName);
     const urlParams = new URLSearchParams(window.location.search);
