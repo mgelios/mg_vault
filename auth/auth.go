@@ -14,6 +14,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+const CookieLifetimeInSeconds int = 60 * 60 * 24 * 30
+
 var TokenAuth *jwtauth.JWTAuth
 
 func init() {
@@ -68,9 +70,10 @@ func ProcessLoginRequest(w http.ResponseWriter, r *http.Request) {
 	})
 
 	cookie := http.Cookie{
-		Name:  "jwt",
-		Path:  "/",
-		Value: token,
+		Name:   "jwt",
+		Path:   "/",
+		Value:  token,
+		MaxAge: CookieLifetimeInSeconds,
 	}
 
 	http.SetCookie(w, &cookie)
