@@ -46,10 +46,67 @@
         <input type="text" name="name" placeholder="Enter note name" value="{{.LinkCategory.Name}}" required>
     </div>
     <div class="input-wrapper">
-        <h2>Links:</h2>
+        <h2>Links: <a href="#" class="add-link-input">+</a></h2>
     </div>
     <div class="input-wrapper">
-        <h2>LinkGroups:</h2>
+        <h2>LinkGroups: <a href="#" class="add-link-group-input">+</a></h2>
     </div>
+    
+    <div id="linkInputWrapper"  hidden>
+        <input type="text" name="name" placeholder="Name">
+        <input type="text" name="url" placeholder="URL">
+        <input type="text" name="badgeText" placeholder="Badge Text">
+        <input type="text" name="badgeColor" placeholder="Badge Color">
+        <input type="text" name="badgeTextColor" placeholder="Badge Text Color">
+    </div>
+
+    <div id="linkInputGroupWrapper" hidden>
+        <input type="text" name="name" placeholder="Name">
+        <div class="input-wrapper">
+            <h2>Links: <a href="#" class="add-link-input">+</a></h2>
+        </div>
+    </div>
+
+    <script>
+        function applyListenerToAddLinkButton(element, targetDomElement) {
+            element.addEventListener('click', function (event) {
+                const linkInputWrapperTemplate = document.getElementById("linkInputWrapper");
+                var newLinkInputWrapper = linkInputWrapperTemplate.cloneNode(true);
+                newLinkInputWrapper.hidden = false;
+                newLinkInputWrapper.id = '';
+                newLinkInputWrapper.className = "input-wrapper"
+                targetDomElement.appendChild(newLinkInputWrapper);
+            });
+        }
+
+        function applyListenerToAddLinkGroupButton(element, targetDomElement) {
+            element.addEventListener('click', function (event) {
+                const linkInputGroupWrapperTemplate = document.getElementById("linkInputGroupWrapper");
+                var newLinkGroupInputWrapper = linkInputGroupWrapperTemplate.cloneNode(true);
+                newLinkGroupInputWrapper.hidden = false;
+                newLinkGroupInputWrapper.id = '';
+                newLinkGroupInputWrapper.className = "input-wrapper";
+                newLinkGroupInputWrapper.querySelector("h2 a")
+                targetDomElement.appendChild(newLinkGroupInputWrapper);
+            });
+        }
+
+        function initAddLinkButtons() {
+            const addLinkInputButtons = document.getElementsByClassName("add-link-input");
+            for (let element of addLinkInputButtons) {
+                applyListenerToAddLinkButton(element, element.parentElement.parentElement)
+            }
+        }
+
+        function initAddLinkGroupButtons() {
+            const addLinkGroupInputButtons = document.getElementsByClassName("add-link-group-input");
+            for (let element of addLinkGroupInputButtons) {
+                applyListenerToAddLinkGroupButton(element, element.parentElement.parentElement)
+            }
+        }
+
+        initAddLinkButtons();
+        initAddLinkGroupButtons();
+    </script>
 {{end}}
 
