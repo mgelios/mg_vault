@@ -68,7 +68,8 @@
     --brown-5: hsl(30, 100%, 40%);
 
     --main-font-family: sans-serif;
-    --mono-font-family: "";
+    --mono-font-family: 'JetBrainsMonoNL-Regular', 'JetBrainsMono', monospace;
+    --font-size: 14px;
 }
 
 /* common selectors section */
@@ -184,7 +185,7 @@ body {
     background-color: var(--dark-1);
     color: var(--light-3);
     font-family: var(--main-font-family);
-    font-size: 1em;
+    font-size: var(--font-size);
     padding: 0em;
     margin: 0em;
 }
@@ -567,7 +568,7 @@ textarea {
         border: none;
         caret-color: var(--light-3);
         line-height: 1.5;
-        font-family: 'JetBrainsMonoNL-Regular', 'JetBrainsMono', monospace;
+        font-family: var(--mono-font-family);
     }
 
     code {
