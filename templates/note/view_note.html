@@ -7,15 +7,13 @@
 <div class="flex-container">
     <section class="container-header">
         <div>
-            <a href="/">
-                <h1>Note</h1>
-            </a>
+            <h1>
+                <a href="/">{{.Note.Name}}</a>
+                <a href="/notes/edit?note_id={{.Note.Id}}">✎</a>
+            </h1>
         </div>
     </section>
     <section class="cards-container note-view">
-        <div id="note-name">
-            <h1>{{.Note.Name}} <a href="/notes/edit?note_id={{.Note.Id}}">✎</a></h1>
-        </div>
         <div>
             Path:
             {{$path := ""}}
