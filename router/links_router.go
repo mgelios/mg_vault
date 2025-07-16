@@ -46,11 +46,15 @@ func UpdateLinkCategpry(w http.ResponseWriter, r *http.Request) {
 	var linkCategory model.LinkCategory
 	err := json.NewDecoder(r.Body).Decode(&linkCategory)
 
+	message, _ := json.Marshal(&linkCategory)
+	slog.Info(string(message))
+
 	if err != nil {
 		slog.Error(err.Error())
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+
 }
 
 func DeleteLinkCategory(w http.ResponseWriter, r *http.Request) {

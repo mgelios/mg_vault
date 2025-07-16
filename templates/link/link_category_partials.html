@@ -52,29 +52,36 @@
         <h2>LinkGroups: <a href="#" class="add-link-group-input">+</a></h2>
     </div>
     
-    <div id="linkInputWrapper"  hidden>
-        <input type="text" name="name" placeholder="Name">
-        <input type="text" name="url" placeholder="URL">
-        <input type="text" name="badgeText" placeholder="Badge Text">
-        <input type="text" name="badgeColor" placeholder="Badge Color">
-        <input type="text" name="badgeTextColor" placeholder="Badge Text Color">
+    <div id="linkInputWrapper" hidden>
+        <input type="text" name="[#][name]" placeholder="Name" disabled>
+        <input type="text" name="[#][url]" placeholder="URL" disabled>
+        <input type="text" name="[#][badge_text]" placeholder="Badge Text" disabled>
+        <input type="text" name="[#][badge_color]" placeholder="Badge Color" disabled>
+        <input type="text" name="[#][badge_text_color]" placeholder="Badge Text Color" disabled>
     </div>
 
-    <div id="linkInputGroupWrapper" hidden>
-        <input type="text" name="name" placeholder="Name">
+    <div id="linkInputGroupWrapper" hidden disabled>
+        <input type="text" name="link_groups[#].name" placeholder="Name" disabled>
         <div class="input-wrapper">
             <h2>Links: <a href="#" class="add-link-input">+</a></h2>
         </div>
     </div>
 
     <script>
-        function applyListenerToAddLinkButton(element, targetDomElement) {
+        function applyListenerToAddLinkButton(element, targetDomElement, prefix) {
             element.addEventListener('click', function (event) {
                 const linkInputWrapperTemplate = document.getElementById("linkInputWrapper");
                 var newLinkInputWrapper = linkInputWrapperTemplate.cloneNode(true);
                 newLinkInputWrapper.hidden = false;
                 newLinkInputWrapper.id = '';
-                newLinkInputWrapper.className = "input-wrapper"
+                newLinkInputWrapper.className = "input-wrapper link-input-wrapper";
+                var index = Array.from(targetDomElement.children).filter(child => child.classList.contains("link-input-wrapper")).length;
+                const namedFields = newLinkInputWrapper.querySelectorAll('[name]');
+                namedFields.forEach(element => {
+                    const oldName = element.getAttribute("name");
+                    element.setAttribute("name", prefix + oldName.replace("#", index));
+                    element.disabled = false;
+                });
                 targetDomElement.appendChild(newLinkInputWrapper);
             });
         }
@@ -86,7 +93,18 @@
                 newLinkGroupInputWrapper.hidden = false;
                 newLinkGroupInputWrapper.id = '';
                 newLinkGroupInputWrapper.className = "input-wrapper";
-                newLinkGroupInputWrapper.querySelector("h2 a")
+                newLinkGroupInputWrapper.querySelector("h2 a");
+                var index = Array.from(targetDomElement.children).filter(child => child.classList.contains("link-input-wrapper")).length;
+                const namedFields = newLinkGroupInputWrapper.querySelectorAll('[name]');
+                namedFields.forEach(element => {
+                    const oldName = element.getAttribute("name");
+                    element.setAttribute("name", oldName.replace("#", index));
+                    element.disabled = false;
+                });
+                const addLinkInputButtons = newLinkGroupInputWrapper.getElementsByClassName("add-link-input");
+                for (let element of addLinkInputButtons) {
+                    applyListenerToAddLinkButton(element, newLinkGroupInputWrapper, "link_groups[" + index + "][links]");
+                }
                 targetDomElement.appendChild(newLinkGroupInputWrapper);
             });
         }
@@ -94,7 +112,7 @@
         function initAddLinkButtons() {
             const addLinkInputButtons = document.getElementsByClassName("add-link-input");
             for (let element of addLinkInputButtons) {
-                applyListenerToAddLinkButton(element, element.parentElement.parentElement)
+                applyListenerToAddLinkButton(element, element.parentElement.parentElement, "links")
             }
         }
 
