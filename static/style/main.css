@@ -212,6 +212,10 @@ a {
     height: fit-content;
 }
 
+.links-grid {
+    height: fit-content;
+}
+
 .grid-container {
     display: inline-grid;
     box-sizing: border-box;

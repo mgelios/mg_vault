@@ -3,12 +3,38 @@
         <section class="container-header">
             <h1>{{.Name}} Links</h1>
         </section>
-        <section class="links-container">
+        <section class="grid-container links-grid">
             {{range $index, $link := .Links}}
-                <a href="{{$link.Url}}">
-                    <h3>{{$link.Name}}</h3>
-                    <p>{{$link.Name}}</p>
+                <a href="{{$link.Url}}" class="grid-item" target="_blank">
+                    <p><span class="badge backgroud-{{$link.BadgeColor}} text-color-{{$link.BadgeTextColor}}">{{$link.BadgeText}}</span> {{$link.Name}}</p>
                 </a>
+            {{end}}
+        </section>
+    </div>
+
+    <div class="flex-container">
+        <section class="container-header">
+            <h1>{{.Name}} Cards</h1>
+        </section>
+        <section class="cards-container" data-masonry='{"percentPosition": true }'>
+            {{range $index, $linkGroup := .LinkGroups}}
+                <div class="card-wrapper">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>{{$linkGroup.Name}}</h3>
+                        </div>
+                        <div class="card-body">
+                            {{range $linkIndex, $link := $linkGroup.Links}}
+                                <a href="{{$link.Url}}" target="_blank">
+                                    <div>
+                                        <span class="badge backgroud-{{$link.BadgeColor}} text-color-{{$link.BadgeTextColor}}">{{$link.BadgeText}}</span>
+                                        {{$link.Name}}
+                                    </div>
+                                </a>
+                            {{end}}
+                        </div>
+                    </div>
+                </div>
             {{end}}
         </section>
     </div>
@@ -21,22 +47,13 @@
 
     <div class="flex-container">
         <section class="container-header">
-            <h1>{{.Name}} Cards</h1>
-        </section>
-        <section class="cards-container">
-            {{range $index, $link := .Links}}
-                <div class="card_wrapper">
-
-                </div>
-            {{end}}
-        </section>
-    </div>
-
-    <div class="flex-container">
-        <section class="container-header">
             <h1><a href="./links/edit?category_id={{.Id}}"> Edit </h1>
         </section>
     </div>
+
+    <script>
+        new Masonry(".cards-container");
+    </script>
 {{end}}
 
 
@@ -47,9 +64,36 @@
     </div>
     <div class="input-wrapper">
         <h2>Links: <a href="#" class="add-link-input">+</a></h2>
+
+        {{range $index, $link := .LinkCategory.Links}}
+            <div class="input-wrapper link-input-wrapper">
+                <input type="text" name="links[{{$index}}][name]" value="{{$link.Name}}">
+                <input type="text" name="links[{{$index}}][url]" value="{{$link.Url}}">
+                <input type="text" name="links[{{$index}}][badge_text]" value="{{$link.BadgeText}}">
+                <input type="text" name="links[{{$index}}][badge_color]" value="{{$link.BadgeColor}}">
+                <input type="text" name="links[{{$index}}][badge_text_color]" value="{{$link.BadgeTextColor}}">
+            </div>
+        {{end}}
     </div>
     <div class="input-wrapper">
         <h2>LinkGroups: <a href="#" class="add-link-group-input">+</a></h2>
+        {{range $groupIndex, $linkGroup := .LinkCategory.LinkGroups}}
+            <div class="input-wrapper link-group-input-wrapper">
+                <input type="text" name="link_groups[{{$groupIndex}}][name]" value="{{$linkGroup.Name}}">
+                <div class="input-wrapper">
+                    <h2>Links: <a href="#" class="add-link-input">+</a></h2>
+                    {{range $index, $link := $linkGroup.Links}}
+                        <div class="input-wrapper link-input-wrapper">
+                            <input type="text" name="link_groups[{{$groupIndex}}][links][{{$index}}][name]" value="{{$link.Name}}">
+                            <input type="text" name="link_groups[{{$groupIndex}}][links][{{$index}}][url]" value="{{$link.Url}}">
+                            <input type="text" name="link_groups[{{$groupIndex}}][links][{{$index}}][badge_text]" value="{{$link.BadgeText}}">
+                            <input type="text" name="link_groups[{{$groupIndex}}][links][{{$index}}][badge_color]" value="{{$link.BadgeColor}}">
+                            <input type="text" name="link_groups[{{$groupIndex}}][links][{{$index}}][badge_text_color]" value="{{$link.BadgeTextColor}}">
+                        </div>
+                    {{end}}
+                </div>
+            </div>
+        {{end}}
     </div>
     
     <div id="linkInputWrapper" hidden>
@@ -61,7 +105,7 @@
     </div>
 
     <div id="linkInputGroupWrapper" hidden disabled>
-        <input type="text" name="link_groups[#].name" placeholder="Name" disabled>
+        <input type="text" name="link_groups[#][name]" placeholder="Name" disabled>
         <div class="input-wrapper">
             <h2>Links: <a href="#" class="add-link-input">+</a></h2>
         </div>
@@ -92,9 +136,9 @@
                 var newLinkGroupInputWrapper = linkInputGroupWrapperTemplate.cloneNode(true);
                 newLinkGroupInputWrapper.hidden = false;
                 newLinkGroupInputWrapper.id = '';
-                newLinkGroupInputWrapper.className = "input-wrapper";
+                newLinkGroupInputWrapper.className = "input-wrapper link-group-input-wrapper";
                 newLinkGroupInputWrapper.querySelector("h2 a");
-                var index = Array.from(targetDomElement.children).filter(child => child.classList.contains("link-input-wrapper")).length;
+                var index = Array.from(targetDomElement.children).filter(child => child.classList.contains("link-group-input-wrapper")).length;
                 const namedFields = newLinkGroupInputWrapper.querySelectorAll('[name]');
                 namedFields.forEach(element => {
                     const oldName = element.getAttribute("name");
@@ -110,7 +154,7 @@
         }
 
         function initAddLinkButtons() {
-            const addLinkInputButtons = document.getElementsByClassName("add-link-input");
+            const addLinkInputButtons = document.querySelectorAll("form > .input-wrapper > h2 > .add-link-input");
             for (let element of addLinkInputButtons) {
                 applyListenerToAddLinkButton(element, element.parentElement.parentElement, "links")
             }
@@ -120,6 +164,13 @@
             const addLinkGroupInputButtons = document.getElementsByClassName("add-link-group-input");
             for (let element of addLinkGroupInputButtons) {
                 applyListenerToAddLinkGroupButton(element, element.parentElement.parentElement)
+            }
+
+            const addLinkInputButtons = document.querySelectorAll("form > .input-wrapper > .input-wrapper > .input-wrapper > h2 > .add-link-input");
+            var counter = 0;
+            for (let element of addLinkInputButtons) {
+                applyListenerToAddLinkButton(element, element.parentElement.parentElement, "link_groups[" + counter + "][links]");
+                counter
             }
         }
 

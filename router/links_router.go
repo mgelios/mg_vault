@@ -55,6 +55,7 @@ func UpdateLinkCategpry(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	storage.UpdateLinkCategory(linkCategory)
 }
 
 func DeleteLinkCategory(w http.ResponseWriter, r *http.Request) {

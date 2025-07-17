@@ -56,7 +56,7 @@ func CreateLinkCategory(linkCategory model.LinkCategory) error {
 }
 
 func UpdateLinkCategory(linkCategory model.LinkCategory) error {
-	collection := mongo_client.Database("mg_vault").Collection("notes")
+	collection := mongo_client.Database("mg_vault").Collection("link_categories")
 	id, _ := primitive.ObjectIDFromHex(linkCategory.Id)
 	categoryUpdate := model.LinkCategoryUpdate{
 		Name:       linkCategory.Name,
