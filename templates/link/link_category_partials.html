@@ -62,7 +62,7 @@
         <h2>Name:</h2>
         <input type="text" name="name" placeholder="Enter note name" value="{{.LinkCategory.Name}}" required>
     </div>
-    <div class="input-wrapper">
+    <div class="input-wrapper links-section">
         <h2>Links: <a href="#" class="add-link-input">+</a></h2>
 
         {{range $index, $link := .LinkCategory.Links}}
@@ -72,14 +72,16 @@
                 <input type="text" name="links[{{$index}}][badge_text]" value="{{$link.BadgeText}}">
                 <input type="text" name="links[{{$index}}][badge_color]" value="{{$link.BadgeColor}}">
                 <input type="text" name="links[{{$index}}][badge_text_color]" value="{{$link.BadgeTextColor}}">
+                <button class="button remove-link-button" type="button">X</button>
             </div>
         {{end}}
     </div>
-    <div class="input-wrapper">
+    <div class="input-wrapper link-groups-section">
         <h2>LinkGroups: <a href="#" class="add-link-group-input">+</a></h2>
         {{range $groupIndex, $linkGroup := .LinkCategory.LinkGroups}}
             <div class="input-wrapper link-group-input-wrapper">
                 <input type="text" name="link_groups[{{$groupIndex}}][name]" value="{{$linkGroup.Name}}">
+                <button class="button remove-link-group-button" type="button">X</button>
                 <div class="input-wrapper">
                     <h2>Links: <a href="#" class="add-link-input">+</a></h2>
                     {{range $index, $link := $linkGroup.Links}}
@@ -89,6 +91,7 @@
                             <input type="text" name="link_groups[{{$groupIndex}}][links][{{$index}}][badge_text]" value="{{$link.BadgeText}}">
                             <input type="text" name="link_groups[{{$groupIndex}}][links][{{$index}}][badge_color]" value="{{$link.BadgeColor}}">
                             <input type="text" name="link_groups[{{$groupIndex}}][links][{{$index}}][badge_text_color]" value="{{$link.BadgeTextColor}}">
+                            <button class="button remove-link-button" type="button">X</button>
                         </div>
                     {{end}}
                 </div>
@@ -102,16 +105,42 @@
         <input type="text" name="[#][badge_text]" placeholder="Badge Text" disabled>
         <input type="text" name="[#][badge_color]" placeholder="Badge Color" disabled>
         <input type="text" name="[#][badge_text_color]" placeholder="Badge Text Color" disabled>
+        <button class="button remove-link-button" type="button">X</button>
     </div>
 
     <div id="linkInputGroupWrapper" hidden disabled>
         <input type="text" name="link_groups[#][name]" placeholder="Name" disabled>
+        <button class="button remove-link-group-button" type="button">X</button>
         <div class="input-wrapper">
             <h2>Links: <a href="#" class="add-link-input">+</a></h2>
         </div>
     </div>
 
     <script>
+        function rebuildLinkIndexes() {
+            const linkSectionWrappers = document.querySelectorAll(".links-section .link-input-wrapper");
+            for (let i = 0; i < linkSectionWrappers.length; i++) {
+                const linkInputs = linkSectionWrappers[i].querySelectorAll("input");
+                linkInputs.forEach(element => {
+                    const oldName = element.getAttribute("name");
+                    element.setAttribute("name", oldName.replace(/\[\d+\]/, `[${i}]`));
+                });
+            }
+
+            const linkGroupSectionWrappers = document.querySelectorAll(".link-group-input-wrapper");
+            for (let i = 0; i < linkGroupSectionWrappers.length; i++) {
+                const linkGroupLinkWrappers = linkGroupSectionWrappers[i].querySelectorAll(".link-input-wrapper");
+                for (let j = 0; j < linkGroupLinkWrappers.length; j++) {
+                    console.log(j);
+                    const linkInputs = linkGroupLinkWrappers[j].querySelectorAll("input");
+                    linkInputs.forEach(element => {
+                        const oldName = element.getAttribute("name");
+                        element.setAttribute("name", oldName.replace(/\[\d+\]/, `[${i}]`).replace(/(\[\w+\])\[\d+\]/, `$1[${j}]`));
+                    });
+                }
+            }
+        }
+
         function applyListenerToAddLinkButton(element, targetDomElement, prefix) {
             element.addEventListener('click', function (event) {
                 const linkInputWrapperTemplate = document.getElementById("linkInputWrapper");
@@ -126,6 +155,8 @@
                     element.setAttribute("name", prefix + oldName.replace("#", index));
                     element.disabled = false;
                 });
+                const removeLinkButton = newLinkInputWrapper.querySelectorAll(".remove-link-button");
+                applyListenerToRemoveLinkButton(removeLinkButton[0]);
                 targetDomElement.appendChild(newLinkInputWrapper);
             });
         }
@@ -149,6 +180,9 @@
                 for (let element of addLinkInputButtons) {
                     applyListenerToAddLinkButton(element, newLinkGroupInputWrapper, "link_groups[" + index + "][links]");
                 }
+
+                const removeLinkGroupButton = newLinkGroupInputWrapper.querySelectorAll(".remove-link-group-button");
+                applyListenerToRemoveLinkGroupButton(removeLinkGroupButton[0]);
                 targetDomElement.appendChild(newLinkGroupInputWrapper);
             });
         }
@@ -174,8 +208,38 @@
             }
         }
 
+        function applyListenerToRemoveLinkButton(element) {
+            element.addEventListener('click', function(event) {
+                element.parentElement.parentElement.removeChild(element.parentElement);
+                rebuildLinkIndexes();
+            });
+        }
+
+        function applyListenerToRemoveLinkGroupButton(element) {
+            element.addEventListener('click', function(event) {
+                element.parentElement.parentElement.removeChild(element.parentElement);
+                rebuildLinkIndexes();
+            });
+        }
+
+        function initRemoveLinkButtons() {
+            const removeLinkButtons = document.querySelectorAll(".remove-link-button");
+            removeLinkButtons.forEach(element => {
+                applyListenerToRemoveLinkButton(element);
+            });
+        }
+
+        function initRemoveLinkGroupButtons() {
+            const removeLinkGroupButtons = document.querySelectorAll(".remove-link-group-button");
+            removeLinkGroupButtons.forEach(element => {
+                applyListenerToRemoveLinkGroupButton(element);
+            });
+        }
+
         initAddLinkButtons();
         initAddLinkGroupButtons();
+        initRemoveLinkButtons();
+        initRemoveLinkGroupButtons();
     </script>
 {{end}}
 
