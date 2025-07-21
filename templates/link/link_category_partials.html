@@ -50,11 +50,6 @@
                     <h1>{{$linkSubcategory.Name}}</h1>
                 </a>
             {{end}}
-            {{if .LinkCategory.Name}}
-                <a href="#" hx-post="/api/v1/links/category?parent_category_id={{.LinkCategory.Id}}" class="grid-item">
-                    <h1>+</h1>
-                </a>
-            {{end}}
         </section>
     </div>
 
@@ -110,6 +105,25 @@
                 </div>
             </div>
         {{end}}
+    </div>
+
+    <div class="flex-container">
+        <section class="container-header">
+            <h1>{{.LinkCategory.Name}} Subcategories</h1>
+        </section>
+        <section class="grid-container links-grid">
+            {{ $outer := . }}
+            {{range $index, $linkSubcategory := .LinkSubcategories}}
+                <a href="/links/category?category_id={{$linkSubcategory.Id}}" class="grid-item">
+                    <h1>{{$linkSubcategory.Name}}</h1>
+                </a>
+            {{end}}
+            {{if .LinkCategory.Name}}
+                <a href="#" hx-post="/api/v1/links/category?parent_category_id={{.LinkCategory.Id}}" class="grid-item">
+                    <h1>+</h1>
+                </a>
+            {{end}}
+        </section>
     </div>
     
     <div id="linkInputWrapper" hidden>

@@ -46,7 +46,10 @@ func OpenEditLinkCategoryPage(w http.ResponseWriter, r *http.Request) {
 		User: user,
 	}
 	linkCategory, _ := storage.GetLinkCategoryById(r.URL.Query().Get("category_id"))
+	linkSubcategories, _ := storage.GetLinkSubcategoriesByParentId(r.URL.Query().Get("category_id"))
+
 	response.LinkCategory = linkCategory
+	response.LinkSubcategories = linkSubcategories
 
 	if err := templates.ExecuteTemplate(w, "edit_link_category.html", response); err != nil {
 		slog.Error(err.Error())
