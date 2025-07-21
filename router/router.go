@@ -69,12 +69,15 @@ func definePublicEndpoints(router *chi.Mux) {
 		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 			user := auth.GetUserClaimsFromContext(r)
 			linkCategory := model.LinkCategory{}
+			linkSubcategories := []model.LinkCategory{}
 			if user.Id != "<nil>" {
 				linkCategory, _ = storage.GetRootLinkCategory()
+				linkSubcategories, _ = storage.GetLinkSubcategoriesByParentId(linkCategory.Id)
 			}
 			responseModel := model.MainPageResponse{
-				User:         user,
-				LinkCategory: linkCategory,
+				User:              user,
+				LinkCategory:      linkCategory,
+				LinkSubcategories: linkSubcategories,
 			}
 			if err := templates.ExecuteTemplate(w, "index.html", responseModel); err != nil {
 				slog.Error(err.Error())

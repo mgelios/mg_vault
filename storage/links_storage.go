@@ -48,6 +48,37 @@ func GetLinkCategoryById(id string) (model.LinkCategory, error) {
 	return result, err
 }
 
+func GetLinkSubcategoriesByParentId(id string) ([]model.LinkCategory, error) {
+	collection := mongo_client.Database("mg_vault").Collection("link_categories")
+	idFilter, _ := primitive.ObjectIDFromHex(id)
+	filter := bson.D{{"parent", idFilter}}
+	cursor, err := collection.Find(context.Background(), filter)
+
+	if err != nil {
+		slog.Error(err.Error())
+	}
+
+	defer cursor.Close(context.Background())
+
+	var subcategories []model.LinkCategory
+	err = cursor.All(context.Background(), &subcategories)
+	return subcategories, err
+}
+
+func CreateLinkCategoryWithParent(parent_id string) (string, error) {
+	parentObjectId, _ := primitive.ObjectIDFromHex(parent_id)
+	collection := mongo_client.Database("mg_vault").Collection("link_categories")
+
+	result, err := collection.InsertOne(context.Background(), model.LinkCategory{
+		Name:       "Name Placeholder",
+		Links:      []model.Link{},
+		LinkGroups: []model.LinkGroup{},
+		Parent:     parentObjectId,
+	})
+
+	return result.InsertedID.(primitive.ObjectID).Hex(), err
+}
+
 func CreateLinkCategory(linkCategory model.LinkCategory) error {
 	collection := mongo_client.Database("mg_vault").Collection("link_categories")
 	_, err := collection.InsertOne(context.Background(), linkCategory)
