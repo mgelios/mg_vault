@@ -1,57 +1,65 @@
 {{define "view_link_category_content"}}
-    <div class="flex-container">
-        <section class="container-header">
-            <h1>{{.LinkCategory.Name}} Links</h1>
-        </section>
-        <section class="grid-container links-grid">
-            {{range $index, $link := .LinkCategory.Links}}
-                <a href="{{$link.Url}}" class="grid-item" target="_blank">
-                    <p><span class="badge backgroud-{{$link.BadgeColor}} text-color-{{$link.BadgeTextColor}}">{{$link.BadgeText}}</span> {{$link.Name}}</p>
-                </a>
-            {{end}}
-        </section>
-    </div>
 
-    <div class="flex-container">
-        <section class="container-header">
-            <h1>{{.LinkCategory.Name}} Cards</h1>
-        </section>
-        <section class="cards-container" data-masonry='{"percentPosition": true }'>
-            {{range $index, $linkGroup := .LinkCategory.LinkGroups}}
-                <div class="card-wrapper">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3>{{$linkGroup.Name}}</h3>
-                        </div>
-                        <div class="card-body">
-                            {{range $linkIndex, $link := $linkGroup.Links}}
-                                <a href="{{$link.Url}}" target="_blank">
-                                    <div>
-                                        <span class="badge backgroud-{{$link.BadgeColor}} text-color-{{$link.BadgeTextColor}}">{{$link.BadgeText}}</span>
-                                        {{$link.Name}}
-                                    </div>
-                                </a>
-                            {{end}}
+    {{if len .LinkCategory.Links}}
+        <div class="flex-container">
+            <section class="container-header">
+                <h1>{{.LinkCategory.Name}} Links</h1>
+            </section>
+            <section class="grid-container links-grid">
+                {{range $index, $link := .LinkCategory.Links}}
+                    <a href="{{$link.Url}}" class="grid-item" target="_blank">
+                        <p><span class="badge backgroud-{{$link.BadgeColor}} text-color-{{$link.BadgeTextColor}}">{{$link.BadgeText}}</span> {{$link.Name}}</p>
+                    </a>
+                {{end}}
+            </section>
+        </div>
+    {{end}}
+
+
+    {{if len .LinkCategory.LinkGroups}}
+        <div class="flex-container">
+            <section class="container-header">
+                <h1>{{.LinkCategory.Name}} Cards</h1>
+            </section>
+            <section class="cards-container" data-masonry='{"percentPosition": true }'>
+                {{range $index, $linkGroup := .LinkCategory.LinkGroups}}
+                    <div class="card-wrapper">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>{{$linkGroup.Name}}</h3>
+                            </div>
+                            <div class="card-body">
+                                {{range $linkIndex, $link := $linkGroup.Links}}
+                                    <a href="{{$link.Url}}" target="_blank">
+                                        <div>
+                                            <span class="badge backgroud-{{$link.BadgeColor}} text-color-{{$link.BadgeTextColor}}">{{$link.BadgeText}}</span>
+                                            {{$link.Name}}
+                                        </div>
+                                    </a>
+                                {{end}}
+                            </div>
                         </div>
                     </div>
-                </div>
-            {{end}}
-        </section>
-    </div>
+                {{end}}
+            </section>
+        </div>
+    {{end}}
 
-    <div class="flex-container">
-        <section class="container-header">
-            <h1>{{.LinkCategory.Name}} Subcategories</h1>
-        </section>
-        <section class="grid-container links-grid">
-            {{ $outer := . }}
-            {{range $index, $linkSubcategory := .LinkSubcategories}}
-                <a href="/links/category?category_id={{$linkSubcategory.Id}}" class="grid-item">
-                    <h1>{{$linkSubcategory.Name}}</h1>
-                </a>
-            {{end}}
-        </section>
-    </div>
+    {{if .LinkSubcategories}}
+        <div class="flex-container">
+            <section class="container-header">
+                <h1>{{.LinkCategory.Name}} Subcategories</h1>
+            </section>
+            <section class="grid-container links-grid">
+                {{ $outer := . }}
+                {{range $index, $linkSubcategory := .LinkSubcategories}}
+                    <a href="/links/category?category_id={{$linkSubcategory.Id}}" class="grid-item">
+                        <h1>{{$linkSubcategory.Name}}</h1>
+                    </a>
+                {{end}}
+            </section>
+        </div>
+    {{end}}
 
     <div class="flex-container">
         <section class="container-header">
