@@ -39,6 +39,16 @@
 <script>
     const target = document.getElementById("note-content");
     target.innerHTML = window.markdownit().render("{{.Note.Content}}");
+    mermaid.initialize({
+        startOnLoad: false,
+        theme: "dark"
+    });
+
+    mermaid.run({
+        querySelector: 'pre > .language-mermaid'
+    });
+
+    Prism.highlightAll();
 </script>
 
 {{template "body_end"}}

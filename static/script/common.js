@@ -53,6 +53,14 @@ function declareMarkdownPreview(sourceInput, targetElement) {
         if (editor.offsetHeight < editor.scrollHeight) {
             editor.style.height = `${editor.scrollHeight}px`;
         }
+
+        mermaid.initialize({
+            startOnLoad: false,
+            theme: "dark"
+        });
+        mermaid.run({
+            querySelector: 'pre > .language-mermaid',
+        });
     })
 
     editor.dispatchEvent(new Event("input"));
